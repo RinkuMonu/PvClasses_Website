@@ -67,6 +67,7 @@ interface Review {
   rating: number;
   comment: string;
 }
+//
 
 interface ReviewsResponse {
   data: Review[];
@@ -587,20 +588,21 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
                       <div
                         className="theme-btn btn-style-two "
                         style={{
-                          display:"flex",
-                             justifyContent:"center",
-                          alignItems:"center"
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        <button className="txt"
-                        style={{
-                          backgroundColor:"transparent",
-                          color:"black",
-                          display:"flex",
-                          justifyContent:"center",
-                          alignItems:"center"
-                        }}
-                        onClick={()=>getEnrollment(course?._id)}
+                        <button
+                          className="txt"
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "black",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onClick={() => getEnrollment(course?._id)}
                         >
                           Buy Now <FaAngleRight />
                         </button>
