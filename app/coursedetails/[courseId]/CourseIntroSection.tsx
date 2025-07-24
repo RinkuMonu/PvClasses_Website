@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { FaPlay } from "react-icons/fa";
 import { FaAngleDown, FaAngleUp, FaAngleRight } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
@@ -41,6 +41,8 @@ interface Course {
   price: number;
   thumbnail: string;
   instructor: Instructor;
+  learningOutcomes?: string[];
+  requirements?: string[];
 }
 
 interface Lesson {
@@ -112,25 +114,6 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
     { id: "prod-announcement", label: "Announcement" },
     { id: "prod-faq", label: "FAQ" },
     { id: "prod-reviews", label: "Reviews" },
-  ];
-
-  const learnItems = [
-    "Phasellus enim magna, varius et commodo ut.",
-    "Sed consequat justo non mauris pretium at tempor justo.",
-    "Ut nulla tellus, eleifend euismod pellentesque vel, sagittis vel justo",
-    "Phasellus enim magna, varius et commodo ut.",
-    "Phasellus enim magna, varius et commodo ut.",
-    "Sed consequat justo non mauris pretium at tempor justo.",
-    "Ut nulla tellus, eleifend euismod pellentesque vel, sagittis vel justo",
-    "Phasellus enim magna, varius et commodo ut.",
-  ];
-
-  const requirements = [
-    "Phasellus enim magna, varius et commodo ut, ultricies vitae velit. Ut nulla tellus, eleifend euismod pellentesque vel, sagittis vel justo",
-    "Ultricies vitae velit. Ut nulla tellus, eleifend euismod pellentesque vel.",
-    "Phasellus enim magna, varius et commodo ut.",
-    "Varius et commodo ut, ultricies vitae velit. Ut nulla tellus.",
-    "Phasellus enim magna, varius et commodo ut.",
   ];
 
   const curriculum = [
@@ -231,9 +214,7 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await api.get<{ data: Course }>(
-          `/courses/${courseId}`
-        );
+        const res = await api.get<{ data: Course }>(`/courses/${courseId}`);
         setCourse(res?.data?.data);
       } catch (e) {
         console.error("Error fetching course:", e);
@@ -303,21 +284,40 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
                   </li>
                   <li>Total Lessons: {course?.totalLessons}</li>
                 </ul>
-                <h3>What you&apos;ll learn?</h3>
-
+                <h3>What you ll learn?</h3>
                 <ul className="review-list">
-                  {learnItems.map((item, i) => (
-                    <li key={i}>
-                      <FaCheckCircle className="text-success me-2" size={12} />{" "}
-                      {item}
-                    </li>
-                  ))}
+                  {course?.learningOutcomes?.flatMap((item, index) =>
+                    item
+                      .split(",")
+                      .filter((line) => line.trim() !== "") // empty line hatao
+                      .map((line, subIndex) => (
+                        <li key={`${index}-${subIndex}`}>
+                          <FaCheckCircle
+                            className="text-success me-2"
+                            size={12}
+                          />{" "}
+                          {line}
+                        </li>
+                      ))
+                  )}
                 </ul>
+
                 <h3>Requirements</h3>
                 <ul className="requirement-list">
-                  {requirements.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
+                  {course?.requirements?.flatMap((item, index) =>
+                    item
+                      .split(",")
+                      .filter((line) => line.trim() !== "") // empty line hatao
+                      .map((line, subIndex) => (
+                        <li key={`${index}-${subIndex}`}>
+                          <FaCheckCircle
+                            className="text-success me-2"
+                            size={12}
+                          />{" "}
+                          {line}
+                        </li>
+                      ))
+                  )}
                 </ul>
               </div>
             </div>
@@ -584,18 +584,34 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
                       <div className="time-left mt-4">
                         23 hours left at this price!
                       </div>
-                      <Link
-                        href="/checkout"
-                        className="theme-btn btn-style-two"
+                      <div
+                        className="theme-btn btn-style-two "
+                        style={{
+                          display:"flex",
+                             justifyContent:"center",
+                          alignItems:"center"
+                        }}
                       >
-                        <span className="txt">
+                        <button className="txt"
+                        style={{
+                          backgroundColor:"transparent",
+                          color:"black",
+                          display:"flex",
+                          justifyContent:"center",
+                          alignItems:"center"
+                        }}
+                        onClick={()=>getEnrollment(course?._id)}
+                        >
                           Buy Now <FaAngleRight />
-                        </span>
-                      </Link>
+                        </button>
+                      </div>
                     </>
                   )}
                   <>
-                    <h2 className="reviewHead mt-4"> what&apos;s Student says:</h2>
+                    <h2 className="reviewHead mt-4">
+                      {" "}
+                      what&apos;s Student says:
+                    </h2>
                     {reviews.data.length > 0 ? (
                       <>
                         {reviews.data.map((review) => (

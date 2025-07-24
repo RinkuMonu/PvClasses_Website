@@ -4,7 +4,7 @@ import '@/app/styles/bootstrap.css'
 import '@/app/styles/main.css'
 import '@/app/styles/responsive.css'
 import '@/app/styles/font-awesome.css'
-import Pagination from '@/component/Pagination';
+// import Pagination from '@/component/Pagination';
 import { FaCalendar } from "react-icons/fa";	
 
 export default function BlogSinglePage() {
@@ -121,7 +121,7 @@ export default function BlogSinglePage() {
                   </div>
                 </div>
 
-              <Pagination/>
+              {/* <Pagination/> */}
 
                 <div className="comments-area">
                   <div className="group-title">

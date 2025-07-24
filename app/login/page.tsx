@@ -57,7 +57,7 @@ export default function LoginPage() {
 
     try {
       const res = await api.post("/auth/login", payload);
-      console.log(res.data);
+      // console.log(res.data);
 
       if (res?.data?.success) {
         toast.success(res.data.message || "Login successful!");

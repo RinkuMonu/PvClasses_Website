@@ -6,9 +6,15 @@
   transition: transform 0.3s;
   display: flex;
   justify-content: start;
-  align-items: center;
+  flex-direction: column;
+  align-items: start;
   margin-top: 50px;
 
+}
+.inner-content-course{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .course-card:hover {

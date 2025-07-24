@@ -13,7 +13,7 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
-import Pagination from "@/component/Pagination";
+// import Pagination from "@/component/Pagination";
 
 export default function InstructorProfileSection() {
   const courses = [
@@ -216,7 +216,7 @@ export default function InstructorProfileSection() {
             </div>
 
             {/* Pagination */}
-            <Pagination />
+            {/* <Pagination /> */}
           </div>
         </div>
       </section>

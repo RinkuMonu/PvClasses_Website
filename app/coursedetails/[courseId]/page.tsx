@@ -1,17 +1,15 @@
-// app/coursedetails/[courseId]/page.tsx
+"use client";
 
-"use client";  // Ensures this component is treated as a Client Component
-
-import { useRouter } from 'next/navigation';  // Import from next/navigation
+import { useParams } from 'next/navigation';
 import CourseIntroSection from './CourseIntroSection';
 
 export default function Page() {
-  const router = useRouter();
-  const { courseId } = router.query;
+  const params = useParams();
+  const courseId = params?.courseId;
 
-  if (!courseId) {
+  if (!courseId || typeof courseId !== 'string') {
     return <p>Loading...</p>;
   }
 
-  return <CourseIntroSection courseId={courseId as string} />;
+  return <CourseIntroSection courseId={courseId} />;
 }

@@ -11,7 +11,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    console.log("Request →", config.method.toUpperCase(), config.url);
+    // console.log("Request →", config.method.toUpperCase(), config.url);
     return config;
   },
   (error) => {
@@ -22,7 +22,7 @@ api.interceptors.request.use(
 // ===== Response Interceptor =====
 api.interceptors.response.use(
   (response) => {
-    console.log("Response ←", response.status, response.data);
+    // console.log("Response ←", response.status, response.data);
     return response;
   },
   (error) => {
@@ -33,7 +33,7 @@ api.interceptors.response.use(
         window.location.href = "/login"; 
       }
 
-      console.error("Error Response:", error.response.data.message || "Error");
+      // console.error("Error Response:", error.response.data.message || "Error");
     } else {
       console.error("Network Error:", error.message);
     }

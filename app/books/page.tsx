@@ -7,7 +7,7 @@ import '@/app/styles/font-awesome.css'
 import {  FaLink, FaBookmark, FaExpand } from "react-icons/fa";
 import Link from 'next/link';
 import ReadyToStart from '@/component/ReadyToStart'
-import Pagination from '@/component/Pagination'
+// import Pagination from '@/component/Pagination'
 
 // Data arrays
 const categories = ['HTML', 'UI/UX', 'JavaScript', 'Coding', 'Typography'];
@@ -194,7 +194,7 @@ export default function Page() {
                   </div>
                 </div>
 
-                   <Pagination/>
+                   {/* <Pagination/> */}
               </div>
             </div>
 

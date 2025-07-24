@@ -4,31 +4,16 @@ import api from "@/utils/axios";
 import Link from "next/link";
 import Image from "next/image";
 
+interface Course {
+  _id: string;
+  title: string;
+  slug: string;
+  thumbnail: string;
+  lecturer: string;
+  hours: string;
+}
 function PopularCard() {
   const [popularCourses, setpopularCourses] = React.useState([]);
-  // const popularCourses = [
-  //   {
-  //     title: "Color Theory",
-  //     image: "images/course-6.jpg",
-  //     link: "/coursedetails",
-  //     lecturer: "12 Lecturer",
-  //     hours: "54 Hours",
-  //   },
-  //   {
-  //     title: "Typography",
-  //     image: "images/course-6.jpg",
-  //     link: "/coursedetails",
-  //     lecturer: "12 Lecturer",
-  //     hours: "54 Hours",
-  //   },
-  //   {
-  //     title: "Wireframe & Prototyping",
-  //     image: "images/course-6.jpg",
-  //     link: "/coursedetails",
-  //     lecturer: "12 Lecturer",
-  //     hours: "54 Hours",
-  //   },
-  // ];
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -36,10 +21,10 @@ function PopularCard() {
         const res = await api.get("/courses");
         const allCourses = res?.data?.data || [];
         const popularOnly = allCourses.filter(
-          (course) => course?.ispropular === "popular"
+          (course: any) => course?.ispropular === "popular"
         );
         setpopularCourses(popularOnly);
-        console.log("Popular Courses:", popularOnly);
+        // console.log("Popular Courses:", popularOnly);
       } catch (e) {
         console.error("Error fetching courses:", e);
       }
@@ -50,7 +35,7 @@ function PopularCard() {
   return (
     <div>
       <div className="row clearfix">
-        {popularCourses.map((course, index) => (
+        {popularCourses.map((course: Course, index) => (
           <div
             className={`cource-block-two col-lg-4 col-md-6 col-sm-12 wow ${
               index === 0

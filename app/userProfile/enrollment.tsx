@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import {
 import { MdReviews } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
+import { AxiosError } from "axios";
 
 interface Course {
   _id: string;
@@ -61,7 +63,7 @@ const CourseProgressCard: React.FC<CourseProgressCardProps> = ({
     };
   };
 
-  const handleSubmitReview = async (slug) => {
+  const handleSubmitReview = async (slug: string) => {
     if (!rating) {
       toast.error("Please select a rating");
       return;
@@ -86,8 +88,10 @@ const CourseProgressCard: React.FC<CourseProgressCardProps> = ({
         setComment("");
       }
     } catch (error) {
-      console.error("Error submitting review:", error);
-      toast.error(error.response.data.message);
+      const err = error as AxiosError<{ message: string }>;
+      console.error("Error submitting review:", err);
+
+      toast.error(err?.response?.data?.message || "Something went wrong!");
     } finally {
       setIsSubmitting(false);
     }
@@ -96,64 +100,69 @@ const CourseProgressCard: React.FC<CourseProgressCardProps> = ({
   return (
     <>
       <div className="course-card">
-        <div className="course-thumbnail">
-          <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
-            <Image
-              src={enrollment?.course?.thumbnail}
-              alt={enrollment?.course?.title}
-              width={350}
-              height={350}
-              className="thumbnail-image"
-            />
-          </Link>
-        </div>
-        <div className="course-details">
-          <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
-            <h3 className="course-title">{enrollment?.course?.title}</h3>
-            <p className="course-description">
-              {enrollment?.course?.description.split(" ").slice(0, 7).join(" ")}
-              ...
-            </p>
-          </Link>
-
-          <div className="course-meta">
-            <span className="price">
-              <FaMoneyBillWave /> ₹{enrollment?.course?.price}
-            </span>
-            <span className="enrolled-date">
-              <FaCalendarAlt /> {formatDate(enrollment?.enrolledAt)}
-            </span>
+        <div className="inner-content-course">
+          <div className="course-thumbnail">
+            <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
+              <Image
+                src={enrollment?.course?.thumbnail}
+                alt={enrollment?.course?.title}
+                width={350}
+                height={350}
+                className="thumbnail-image"
+              />
+            </Link>
           </div>
+          <div className="course-details">
+            <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
+              <h3 className="course-title">{enrollment?.course?.title}</h3>
+              <p className="course-description">
+                {enrollment?.course?.description
+                  .split(" ")
+                  .slice(0, 7)
+                  .join(" ")}
+                ...
+              </p>
+            </Link>
 
-          <div className="progress-container">
-            <div className="progress-label">
-              <FaChartLine /> Progress: {enrollment?.progress}%
+            <div className="course-meta">
+              <span className="price">
+                <FaMoneyBillWave /> ₹{enrollment?.course?.price}
+              </span>
+              <span className="enrolled-date">
+                <FaCalendarAlt /> {formatDate(enrollment?.enrolledAt)}
+              </span>
             </div>
-            <div className="progress-bar">
-              <div
-                className="progress-fill"
-                style={calculateProgressStyle(enrollment?.progress)}
-              ></div>
-            </div>
-          </div>
 
-          <div className="course-actions">
-            {enrollment?.progress === 100 ? (
-              <button
-                className="continue-btn"
-                onClick={() => setOpenReviewModal(true)}
-              >
-                <MdReviews /> Review Course
-              </button>
-            ) : (
-              <>
-                <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
-                  <button className="continue-btn">
-                    <FaPlay /> Continue Learning
-                  </button>
-                </Link>
-              </>
-            )}
+            <div className="progress-container">
+              <div className="progress-label">
+                <FaChartLine /> Progress: {enrollment?.progress}%
+              </div>
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={calculateProgressStyle(enrollment?.progress)}
+                ></div>
+              </div>
+            </div>
+
+            <div className="course-actions">
+              {enrollment?.progress === 100 ? (
+                <button
+                  className="continue-btn"
+                  onClick={() => setOpenReviewModal(true)}
+                >
+                  <MdReviews /> Review Course
+                </button>
+              ) : (
+                <>
+                  <Link href={`/coursedetails/${enrollment?.course?.slug}`}>
+                    <button className="continue-btn">
+                      <FaPlay /> Continue Learning
+                    </button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

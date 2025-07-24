@@ -10,6 +10,7 @@ import { ContextData } from "@/utils/context";
 
 export default function Header() {
   useEffect(() => {
+    
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
   const [isSticky, setIsSticky] = useState(false);

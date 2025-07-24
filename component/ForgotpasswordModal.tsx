@@ -49,7 +49,7 @@ const ForgotPasswordModal = (
         return
       }
       setPasswordError("")
-      console.log("Reset for:", email, "→", newPassword)
+      // console.log("Reset for:", email, "→", newPassword)
       setEmail("")
       setNewPassword("")
       setStage("email")

@@ -1,8 +1,18 @@
 "use client";
-import React from "react";
+import React, { JSX } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-function Pagination({ currentPage, setCurrentPage, totalPages }) {
+type PaginationProps = {
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+};
+
+function Pagination({
+  currentPage,
+  setCurrentPage,
+  totalPages,
+}: PaginationProps) {
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -10,9 +20,8 @@ function Pagination({ currentPage, setCurrentPage, totalPages }) {
   };
 
   const renderPageNumbers = () => {
-    const pageNumbers = [];
+    const pageNumbers: JSX.Element[] = [];
 
-    // show only 5 pages max: current -2 to current +2
     const start = Math.max(1, currentPage - 2);
     const end = Math.min(totalPages, currentPage + 2);
 
