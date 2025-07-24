@@ -1,0 +1,10 @@
+.gendar-check {
+  display: flex;
+}
+
+.gendar-check-input {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 1px solid #cf7575;
+}

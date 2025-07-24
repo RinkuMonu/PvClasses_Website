@@ -1,0 +1,42 @@
+/* Full-screen black background that slides in */
+.animated-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1040;
+  animation: backdropSlideIn 0.4s ease forwards;
+}
+
+/* White panel that slides in after */
+.animated-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 50vw;
+  background: white;
+  z-index: 1050;
+  animation: menuSlideIn 0.5s ease 0.4s forwards; /* starts after 0.4s */
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Animations */
+@keyframes backdropSlideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes menuSlideIn {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
