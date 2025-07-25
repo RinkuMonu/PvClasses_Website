@@ -37,7 +37,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/pvclasse/public_html/PvClasses_Website
-            npm install --legacy-peer-deps
+            npm install
             npm run build
             pm2 delete next-dashboard-3002 || true
             pm2 start ecosystem.config.js
