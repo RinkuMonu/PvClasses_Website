@@ -602,7 +602,11 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
                             justifyContent: "center",
                             alignItems: "center",
                           }}
-                          onClick={() => getEnrollment(course?._id)}
+                          onClick={() => {
+                            if (course?._id) {
+                              getEnrollment(course._id);
+                            }
+                          }}
                         >
                           Buy Now <FaAngleRight />
                         </button>
