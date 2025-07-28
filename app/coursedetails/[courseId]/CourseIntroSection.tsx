@@ -217,6 +217,7 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
       try {
         const res = await api.get<{ data: Course }>(`/courses/${courseId}`);
         setCourse(res?.data?.data);
+        
       } catch (e) {
         console.error("Error fetching course:", e);
       }

@@ -3,9 +3,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        pathname: "/**",
+        protocol: "https",
+        hostname: "api.pvclasses.in",
+        pathname: "/upload/**",
       },
       {
         protocol: "https",

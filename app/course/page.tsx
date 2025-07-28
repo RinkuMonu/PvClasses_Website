@@ -51,6 +51,7 @@ export default function Courses() {
           `/courses?page=${currentPage}&limit=${limit}&sort=${sort}`
         );
         setCourse(res?.data?.data || []);
+        console.log(res.data.data);
         const totalCourses = res.data.total; // ✅ yahan se aayega
         const totalPages = Math.ceil(totalCourses / limit); // limit = per page items
         setTotalPages(totalPages);

@@ -1,6 +1,7 @@
 import axios from "axios";
 const api = axios.create({
-  baseURL: "http://localhost:5000/api", 
+  // baseURL: "http://localhost:5000/api", 
+  baseURL: "http://api.pvclasses.in/api", 
 });
 
 // ===== Request Interceptor =====
@@ -30,7 +31,7 @@ api.interceptors.response.use(
       if (error.response.status === 401) {
         console.warn("Unauthorized: Redirecting to login...");
         localStorage.removeItem("token");
-        window.location.href = "/login"; 
+        // window.location.href = "/login"; 
       }
 
       // console.error("Error Response:", error.response.data.message || "Error");
