@@ -1,7 +1,6 @@
 import axios from "axios";
 const api = axios.create({
-  // baseURL: "http://localhost:5000/api", 
-  baseURL: "http://api.pvclasses.in/api", 
+  baseURL: "https://api.pvclasses.in/api", 
 });
 
 // ===== Request Interceptor =====
