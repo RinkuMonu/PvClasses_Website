@@ -138,7 +138,7 @@ export default function Footer() {
                     </li>
                     <li>
                       <a href="/course" className="text-decoration-none">
-                        RASfffffffffffffffCourse
+                        RAS Course
                       </a>
                     </li>
                   </ul>
