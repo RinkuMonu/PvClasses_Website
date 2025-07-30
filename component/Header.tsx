@@ -1,96 +1,284 @@
-"use client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { FaBarsStaggered } from "react-icons/fa6";
-import { MdOutlineShoppingCart } from "react-icons/md";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@/app/styles/header.css";
-import { ContextData } from "@/utils/context";
+// "use client";
+// import Link from "next/link";
+// import { useEffect, useState } from "react";
+// import Image from "next/image";
+// import { FaBarsStaggered } from "react-icons/fa6";
+// import { MdOutlineShoppingCart } from "react-icons/md";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "@/app/styles/header.css";
+// import { ContextData } from "@/utils/context";
+
+// export default function Header() {
+//   useEffect(() => {
+    
+//     import("bootstrap/dist/js/bootstrap.bundle.min.js");
+//   }, []);
+//   const [isSticky, setIsSticky] = useState(false);
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const [dropdown, setDropdown] = useState<string | null>(null);
+//   const { token } = ContextData();
+
+//   const toggleDropdown = (key: string) => {
+//     setDropdown((prev) => (prev === key ? null : key));
+//   };
+
+//   useEffect(() => {
+//     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
+//   }, [isMobileMenuOpen]);
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setIsSticky(window.scrollY > 100);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   const mobileMenuItems = [
+//     { label: "Home", href: "/" },
+//     { label: "Register", href: "/register" },
+//     { label: "Courses", href: "/course" },
+//     { label: "Instructor Profiles", href: "/InstructorProfile" },
+//     { label: "User Profiles", href: "/userProfile" },
+//     { label: "Cart", href: "/cart" },
+//     // { label: "Notes", href: "/books" },
+//     { label: "Login", href: "/login" },
+//   ];
+
+//   return (
+//     <header
+//       className={`main-header header-style-one ${isSticky ? "is-sticky" : ""}`}
+//     >
+//       {!isSticky && (
+//         <div className="header-top">
+//           <div className="auto-container">
+//             <div className="clearfix">
+//               <div className="top-left pull-left clearfix">
+//                 <ul className="info-list">
+//                   <li>
+//                     <span>Call Us:</span>
+//                     <a href="tel:+123-456-7890"> +1 (800) 123-456722</a>
+//                   </li>
+//                   <li>
+//                     <span>Email Us:</span>
+//                     <a href="mailto:info@yourcompany.com">
+//                       {" "}
+//                       info@yourcompany.com
+//                     </a>
+//                   </li>
+//                 </ul>
+//               </div>
+//               {!token && (
+//                 <div className="top-right pull-right clearfix">
+//                   <ul className="login-nav">
+//                     <li>
+//                       <Link href="/login">Log In</Link>
+//                     </li>
+//                     <li>
+//                       <Link href="/register">Register</Link>
+//                     </li>
+//                   </ul>
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       <div className="header-upper">
+//         <div className="auto-container">
+//           <div className="clearfix">
+//             <div className="pull-left logo-box py-0">
+//               <div className="logo">
+                // <Link href="/">
+                //   <Image
+                //     src="/images/logopv.png"
+                //     alt="PVclasses Logo"
+                //     width={100}
+                //     height={60}
+                //   />
+                // </Link>
+//               </div>
+//             </div>
+
+//             <div className="nav-outer clearfix">
+//               <div
+//                 className="mobile-nav-toggler"
+//                 onClick={() => setIsMobileMenuOpen(true)}
+//               >
+//                 <FaBarsStaggered />
+//               </div>
+
+//               {/* Mobile Menu */}
+//               {isMobileMenuOpen && (
+//                 <>
+//                   <div
+//                     className="animated-backdrop position-fixed top-0 start-0 w-100 h-100 z-1040"
+//                     onClick={() => setIsMobileMenuOpen(false)}
+//                   ></div>
+
+//                   <div
+//                     className="animated-menu position-fixed top-0 start-0 h-100 bg-white shadow-sm z-1050 overflow-auto"
+//                     style={{ maxWidth: "320px", width: "100%" }}
+//                   >
+//                     <div className="offcanvas-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+//                       <Link href="/">
+//                         <Image
+//                           src="/images/logopv.png"
+//                           alt="PVclasses Logo"
+//                           width={100}
+//                           height={60}
+//                         />
+//                       </Link>
+//                       <button
+//                         type="button"
+//                         className="btn-close"
+//                         onClick={() => setIsMobileMenuOpen(false)}
+//                       />
+//                     </div>
+
+//                     <div className="offcanvas-body pt-2">
+//                       <ul className="list-unstyled">
+//                         {mobileMenuItems.map((item) => (
+//                           <li key={item.label} className="border-bottom">
+//                             <Link
+//                               href={item.href}
+//                               className="d-block px-4 py-2 text-dark text-decoration-none"
+//                             >
+//                               {item.label}
+//                             </Link>
+//                           </li>
+//                         ))}
+//                       </ul>
+//                     </div>
+//                   </div>
+//                 </>
+//               )}
+
+//               {/* Desktop Menu */}
+//               <nav className="main-menu show navbar-expand-md">
+//                 <div
+//                   className="navbar-collapse collapse clearfix"
+//                   id="navbarSupportedContent"
+//                 >
+//                   <ul className="navigation clearfix">
+//                     <li className="current" >
+//                       <Link href="/" style={{color:"green"}}>Home</Link>
+//                     </li>
+//                     <li className="">
+//                       <Link href="/course" style={{color:"green"}}>Courses</Link>
+//                     </li>
+//                     {/* <li className="">
+//                       <Link href="/books">Notes</Link>
+//                     </li> */}
+//                     <li className="dropdown">
+//                       <Link href="#" style={{color:"green"}}>Profiles</Link>
+//                       <ul>
+//                         <li>
+//                           <Link href="/InstructorProfile">
+//                             Instructor Profile
+//                           </Link>
+//                         </li>
+//                         <li>
+//                           <Link href="/userProfile">User profile</Link>
+//                         </li>
+//                       </ul>
+//                     </li>
+//                     <li className="">
+//                       <Link href="/blog" style={{color:"green"}}>Blog</Link>
+//                     </li>
+//                     <li>
+//                       <Link href="/contact" style={{color:"green"}}>Contact Us</Link>
+//                     </li>
+//                     <li>
+//                       <Link href="/cart" style={{color:"green"}}>
+//                         <MdOutlineShoppingCart />
+//                       </Link>
+//                     </li>
+//                   </ul>
+//                 </div>
+//               </nav>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </header>
+//   );
+// }
+
+
+
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import type React from "react"
+
+import { useEffect, useState } from "react"
+import { FiSearch } from "react-icons/fi"
 
 export default function Header() {
-  useEffect(() => {
-    
-    import("bootstrap/dist/js/bootstrap.bundle.min.js");
-  }, []);
-  const [isSticky, setIsSticky] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [dropdown, setDropdown] = useState<string | null>(null);
-  const { token } = ContextData();
-
-  const toggleDropdown = (key: string) => {
-    setDropdown((prev) => (prev === key ? null : key));
-  };
-
-  useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
-  }, [isMobileMenuOpen]);
+  const [isSticky, setIsSticky] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      setIsSticky(window.scrollY > 100)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
-  const mobileMenuItems = [
-    { label: "Home", href: "/" },
-    { label: "Register", href: "/register" },
-    { label: "Courses", href: "/course" },
-    { label: "Instructor Profiles", href: "/InstructorProfile" },
-    { label: "User Profiles", href: "/userProfile" },
-    { label: "Cart", href: "/cart" },
-    // { label: "Notes", href: "/books" },
-    { label: "Login", href: "/login" },
-  ];
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto"
+  }, [isMobileMenuOpen])
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchTerm.trim()) {
+      // Handle search logic here
+      console.log("Search:", searchTerm)
+    }
+  }
 
   return (
-    <header
-      className={`main-header header-style-one ${isSticky ? "is-sticky" : ""}`}
-    >
-      {!isSticky && (
-        <div className="header-top">
-          <div className="auto-container">
-            <div className="clearfix">
-              <div className="top-left pull-left clearfix">
-                <ul className="info-list">
-                  <li>
-                    <span>Call Us:</span>
-                    <a href="tel:+123-456-7890"> +1 (800) 123-456722</a>
-                  </li>
-                  <li>
-                    <span>Email Us:</span>
-                    <a href="mailto:info@yourcompany.com">
-                      {" "}
-                      info@yourcompany.com
-                    </a>
-                  </li>
-                </ul>
+    <header className={`learna-header ${isSticky ? "sticky" : ""}`}>
+      {/* Top Bar */}
+      <div className="header-top-bar">
+        <div className="container">
+          <div className="top-bar-content">
+            <div className="contact-info">
+              <span className="contact-item">
+                <i className="phone-icon"></i>
+                Phone: +4733378901
+              </span>
+              <span className="contact-item">
+                <i className="email-icon"></i>
+                Email: edufik@info.com
+              </span>
+            </div>
+            <div className="top-right-options">
+              <div className="language-selector">
+                <span className="flag-icon">🇬🇧</span>
+                English
+                <i className="dropdown-arrow"></i>
               </div>
-              {!token && (
-                <div className="top-right pull-right clearfix">
-                  <ul className="login-nav">
-                    <li>
-                      <Link href="/login">Log In</Link>
-                    </li>
-                    <li>
-                      <Link href="/register">Register</Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              <div className="admin-link">
+                <i className="user-icon"></i>
+                Admin
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      <div className="header-upper">
-        <div className="auto-container">
-          <div className="clearfix">
-            <div className="pull-left logo-box py-0">
-              <div className="logo">
-                <Link href="/">
+      {/* Main Header */}
+      <div className="header-main">
+        <div className="container">
+          <div className="header-content">
+            {/* Logo */}
+            <div className="logo-section">
+              <Link href="/">
                   <Image
                     src="/images/logopv.png"
                     alt="PVclasses Logo"
@@ -98,110 +286,105 @@ export default function Header() {
                     height={60}
                   />
                 </Link>
-              </div>
             </div>
 
-            <div className="nav-outer clearfix">
-              <div
-                className="mobile-nav-toggler"
-                onClick={() => setIsMobileMenuOpen(true)}
-              >
-                <FaBarsStaggered />
-              </div>
+            {/* Search Bar */}
+            <div className="search-section">
+              <form onSubmit={handleSearchSubmit} className="search-form">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+                <button type="submit" className="search-btn">
+                  <FiSearch />
+                </button>
+              </form>
+            </div>
 
-              {/* Mobile Menu */}
-              {isMobileMenuOpen && (
-                <>
-                  <div
-                    className="animated-backdrop position-fixed top-0 start-0 w-100 h-100 z-1040"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  ></div>
+            {/* Navigation */}
+            <nav className="main-navigation">
+              <ul className="nav-menu">
+                <li className="nav-item dropdown">
+                  <Link href="#" className="nav-link">
+                    Home <i className="dropdown-arrow"></i>
+                  </Link>
+                </li>
+                <li className="nav-item dropdown">
+                  <Link href="/course" className="nav-link">
+                    Courses <i className="dropdown-arrow"></i>
+                  </Link>
+                </li>
+                <li className="nav-item dropdown">
+                  <Link href="#" className="nav-link">
+                    Pages <i className="dropdown-arrow"></i>
+                  </Link>
+                </li>
+                <li className="nav-item dropdown">
+                  <Link href="/blog" className="nav-link">
+                    Blog <i className="dropdown-arrow"></i>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/contact" className="nav-link">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </nav>
 
-                  <div
-                    className="animated-menu position-fixed top-0 start-0 h-100 bg-white shadow-sm z-1050 overflow-auto"
-                    style={{ maxWidth: "320px", width: "100%" }}
-                  >
-                    <div className="offcanvas-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                      <Link href="/">
-                        <Image
-                          src="/images/logopv.png"
-                          alt="PVclasses Logo"
-                          width={100}
-                          height={60}
-                        />
-                      </Link>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      />
-                    </div>
-
-                    <div className="offcanvas-body pt-2">
-                      <ul className="list-unstyled">
-                        {mobileMenuItems.map((item) => (
-                          <li key={item.label} className="border-bottom">
-                            <Link
-                              href={item.href}
-                              className="d-block px-4 py-2 text-dark text-decoration-none"
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Desktop Menu */}
-              <nav className="main-menu show navbar-expand-md">
-                <div
-                  className="navbar-collapse collapse clearfix"
-                  id="navbarSupportedContent"
-                >
-                  <ul className="navigation clearfix">
-                    <li className="current">
-                      <Link href="/">Home</Link>
-                    </li>
-                    <li className="">
-                      <Link href="/course">Courses</Link>
-                    </li>
-                    {/* <li className="">
-                      <Link href="/books">Notes</Link>
-                    </li> */}
-                    <li className="dropdown">
-                      <Link href="#">Profiles</Link>
-                      <ul>
-                        <li>
-                          <Link href="/InstructorProfile">
-                            Instructor Profile
-                          </Link>
-                        </li>
-                        <li>
-                          <Link href="/userProfile">User profile</Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className="">
-                      <Link href="/blog">Blog</Link>
-                    </li>
-                    <li>
-                      <Link href="/contact">Contact Us</Link>
-                    </li>
-                    <li>
-                      <Link href="/cart">
-                        <MdOutlineShoppingCart />
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </nav>
+            {/* Mobile Menu Toggle */}
+            <div className="mobile-menu-toggle">
+              <button className="menu-toggle-btn" onClick={() => setIsMobileMenuOpen(true)}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <>
+          <div className="mobile-menu-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="mobile-menu">
+            <div className="mobile-menu-header">
+              <div className="logo">
+                <div className="logo-icon">
+                  <div className="logo-symbol">📚</div>
+                </div>
+                <span className="logo-text">LEARNA</span>
+              </div>
+              <button className="close-btn" onClick={() => setIsMobileMenuOpen(false)}>
+                ×
+              </button>
+            </div>
+            <div className="mobile-menu-content">
+              <ul className="mobile-nav-menu">
+                <li>
+                  <Link href="#">Home</Link>
+                </li>
+                <li>
+                  <Link href="/courses">Courses</Link>
+                </li>
+                <li>
+                  <Link href="#">Pages</Link>
+                </li>
+                <li>
+                  <Link href="/blog">Blog</Link>
+                </li>
+                <li>
+                  <Link href="/contact">Contact</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
     </header>
-  );
+  )
 }
