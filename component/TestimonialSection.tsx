@@ -52,7 +52,7 @@ export default function TestimonialSection() {
         </div>
 
         {/* Testimonial Carousel */}
-        <div className="single-item-carousel owl-carousel owl-theme">
+        <div className="single-item-carousel owl-carousel owl-theme owl-loaded owl-drag relative">
           {[1, 2, 3].map((i) => (
             <div className="testimonial-block" key={i}>
               <div className="inner-box">

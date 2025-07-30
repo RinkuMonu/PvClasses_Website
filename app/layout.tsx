@@ -31,6 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+        {/* Add favicon */}
+        <link rel="icon" href="/images/favicon.ico" style={{width:100, height:"100px"}} />
+        <title>PV Classes</title>
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ContextProvider>
           <ParallaxProvider>
