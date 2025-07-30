@@ -326,11 +326,11 @@ export default function Header() {
                 <li className="nav-item">
                   <Link href="/contact" className="nav-link">Contact</Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link href="/cart" className="nav-link">
                     <MdOutlineShoppingCart size={20} />
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </nav>
 
@@ -368,7 +368,7 @@ export default function Header() {
                 <li><Link href="/userProfile">User Profile</Link></li>
                 <li><Link href="/blog">Blog</Link></li>
                 <li><Link href="/contact">Contact</Link></li>
-                <li><Link href="/cart">Cart</Link></li>
+                {/* <li><Link href="/cart">Cart</Link></li> */}
               </ul>
             </div>
           </div>
