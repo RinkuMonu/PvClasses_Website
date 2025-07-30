@@ -7,6 +7,13 @@ const nextConfig = {
         hostname: "api.pvclasses.in",
         pathname: "/upload/**",
       },
+
+      //   {
+      //   protocol: "http",
+      //   hostname: "localhost",
+      //   port: "3000", // optional, but good for clarity
+      //   pathname: "/upload/**",
+      // },
       {
         protocol: "https",
         hostname: "gratisography.com",
