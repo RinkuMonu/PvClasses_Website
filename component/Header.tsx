@@ -90,14 +90,14 @@
 //           <div className="clearfix">
 //             <div className="pull-left logo-box py-0">
 //               <div className="logo">
-                // <Link href="/">
-                //   <Image
-                //     src="/images/logopv.png"
-                //     alt="PVclasses Logo"
-                //     width={100}
-                //     height={60}
-                //   />
-                // </Link>
+//                 <Link href="/">
+//                   <Image
+//                     src="/images/logopv.png"
+//                     alt="PVclasses Logo"
+//                     width={100}
+//                     height={60}
+//                   />
+//                 </Link>
 //               </div>
 //             </div>
 
@@ -207,14 +207,13 @@
 // }
 
 
-
 "use client"
 import Image from "next/image"
 import Link from "next/link"
 import type React from "react"
-
 import { useEffect, useState } from "react"
 import { FiSearch } from "react-icons/fi"
+import { MdOutlineShoppingCart } from "react-icons/md"
 
 export default function Header() {
   const [isSticky, setIsSticky] = useState(false)
@@ -236,7 +235,6 @@ export default function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchTerm.trim()) {
-      // Handle search logic here
       console.log("Search:", searchTerm)
     }
   }
@@ -279,13 +277,13 @@ export default function Header() {
             {/* Logo */}
             <div className="logo-section">
               <Link href="/">
-                  <Image
-                    src="/images/logopv.png"
-                    alt="PVclasses Logo"
-                    width={100}
-                    height={60}
-                  />
-                </Link>
+                <Image
+                  src="/images/logopv.png"
+                  alt="PVclasses Logo"
+                  width={100}
+                  height={60}
+                />
+              </Link>
             </div>
 
             {/* Search Bar */}
@@ -307,29 +305,30 @@ export default function Header() {
             {/* Navigation */}
             <nav className="main-navigation">
               <ul className="nav-menu">
-                <li className="nav-item dropdown">
-                  <Link href="#" className="nav-link">
-                    Home <i className="dropdown-arrow"></i>
-                  </Link>
-                </li>
-                <li className="nav-item dropdown">
-                  <Link href="/course" className="nav-link">
-                    Courses <i className="dropdown-arrow"></i>
-                  </Link>
-                </li>
-                <li className="nav-item dropdown">
-                  <Link href="#" className="nav-link">
-                    Pages <i className="dropdown-arrow"></i>
-                  </Link>
-                </li>
-                <li className="nav-item dropdown">
-                  <Link href="/blog" className="nav-link">
-                    Blog <i className="dropdown-arrow"></i>
-                  </Link>
+                <li className="nav-item">
+                  <Link href="/" className="nav-link">Home</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href="/contact" className="nav-link">
-                    Contact
+                  <Link href="/course" className="nav-link">Courses</Link>
+                </li>
+                <li className="nav-item dropdown">
+                  <Link href="#" className="nav-link">
+                    Profiles <i className="dropdown-arrow"></i>
+                  </Link>
+                  <ul className="dropdown-menu">
+                    {/* <li><Link href="/InstructorProfile" className="dropdown-item">Instructor Profile</Link></li> */}
+                    <li><Link href="/userProfile" className="dropdown-item">User Profile</Link></li>
+                  </ul>
+                </li>
+                <li className="nav-item">
+                  <Link href="/blog" className="nav-link">Blog</Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/contact" className="nav-link">Contact</Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/cart" className="nav-link">
+                    <MdOutlineShoppingCart size={20} />
                   </Link>
                 </li>
               </ul>
@@ -359,27 +358,17 @@ export default function Header() {
                 </div>
                 <span className="logo-text">LEARNA</span>
               </div>
-              <button className="close-btn" onClick={() => setIsMobileMenuOpen(false)}>
-                ×
-              </button>
+              <button className="close-btn" onClick={() => setIsMobileMenuOpen(false)}>×</button>
             </div>
             <div className="mobile-menu-content">
               <ul className="mobile-nav-menu">
-                <li>
-                  <Link href="#">Home</Link>
-                </li>
-                <li>
-                  <Link href="/courses">Courses</Link>
-                </li>
-                <li>
-                  <Link href="#">Pages</Link>
-                </li>
-                <li>
-                  <Link href="/blog">Blog</Link>
-                </li>
-                <li>
-                  <Link href="/contact">Contact</Link>
-                </li>
+                <li><Link href="/">Home</Link></li>
+                <li><Link href="/course">Courses</Link></li>
+                <li><Link href="/InstructorProfile">Instructor Profile</Link></li>
+                <li><Link href="/userProfile">User Profile</Link></li>
+                <li><Link href="/blog">Blog</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+                <li><Link href="/cart">Cart</Link></li>
               </ul>
             </div>
           </div>
