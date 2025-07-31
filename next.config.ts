@@ -41,6 +41,11 @@ const nextConfig = {
         pathname: "/upload/**",
       },
       {
+        protocol: "https",
+        hostname: "cms.sevenunique.com",
+        pathname: "uploads/blogs/**",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "5000",
