@@ -4513,18 +4513,6 @@ textarea::placeholder {
   --user-profile-shadow-strong: rgba(0, 0, 0, 0.15);
 }
 
-/* General Container */
-.user-profile-enhanced-container {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: var(--user-profile-background-light);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px var(--user-profile-shadow-light);
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
 
 /* Profile Header Card */
 .user-profile-enhanced-header-card {
@@ -5058,10 +5046,7 @@ textarea::placeholder {
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .user-profile-enhanced-container {
-    padding: 15px;
-    margin: 20px auto;
-  }
+
 
   .user-profile-enhanced-header-card {
     padding: 30px;

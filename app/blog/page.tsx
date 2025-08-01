@@ -1,230 +1,9 @@
-
-
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import Link from "next/link";
-// import axios from "axios";
-// import Image from "next/image";
-
-// export default function BlogPage() {
-//   const [blogs, setBlogs] = useState([]);
-//   const [allCategories, setAllCategories] = useState([]);
-//   const [page, setPage] = useState(1);
-//   const [totalPages, setTotalPages] = useState(1);
-//   const [loading, setLoading] = useState(false);
-//   const [hasMore, setHasMore] = useState(true);
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [selectedCategories, setSelectedCategories] = useState([]);
-
-//   const limit = 3;
-
-//   const fetchBlogs = async (newPage = 1) => {
-//     setLoading(true);
-//     try {
-//       const res = await axios.get(
-//         `https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=9&status=2&page=${newPage}&limit=${limit}`,
-//         {
-//           headers: {
-//             Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
-//           },
-//         }
-//       );
-
-//       const newBlogs = res.data.data || [];
-//       const pagination = res.data.pagination || {};
-
-//       // setBlogs((prev) => [...prev, ...newBlogs]);
-
-//       setBlogs((prev) => {
-//   const existingIds = new Set(prev.map((b) => b.id));
-//   const uniqueNew = newBlogs.filter((b) => !existingIds.has(b.id));
-//   return [...prev, ...uniqueNew];
-// });
-
-
-//       if (pagination.total_pages) {
-//         setTotalPages(pagination.total_pages);
-//       }
-
-//       if (newPage >= pagination.total_pages) {
-//         setHasMore(false);
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-//     setLoading(false);
-//   };
-
-//   useEffect(() => {
-//     fetchBlogs(1);
-//   }, []);
-
-//   const fetchCategories = async () => {
-//     try {
-//       const allCatIds = [...new Set(blogs.map((post) => post.category_id))];
-
-//       const categories = await Promise.all(
-//         allCatIds.map(async (category_id) => {
-//           const res = await axios.get(
-//             `https://cms.sevenunique.com/apis/category/get_category_by_id.php?category_id=${category_id}`,
-//             {
-//               headers: {
-//                 Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
-//               },
-//             }
-//           );
-
-//           return {
-//             id: category_id,
-//             name: res.data?.data?.name,
-//           };
-//         })
-//       );
-//       setAllCategories(categories);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (blogs.length > 0) {
-//       fetchCategories();
-//     }
-//   }, [blogs]);
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       if (
-//         window.innerHeight + window.scrollY >= document.body.offsetHeight - 600 &&
-//         !loading &&
-//         hasMore
-//       ) {
-//         const nextPage = page + 1;
-//         setPage(nextPage);
-//         fetchBlogs(nextPage);
-//       }
-//     };
-
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, [loading, hasMore, page]);
-
-//   const filteredPosts = blogs.filter((post) => {
-//     const categoryName = allCategories.find((cat) => cat.id === post.category_id)?.name;
-
-//     const matchesSearch =
-//       searchQuery === "" ||
-//       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-//       post.slug.toLowerCase().includes(searchQuery.toLowerCase());
-
-//     const matchesCategory =
-//       selectedCategories.length === 0 ||
-//       (categoryName && selectedCategories.includes(categoryName));
-
-//     return matchesSearch && matchesCategory;
-//   });
-
-//   return (
-//     <>
-//       <div className="custom-banner">
-//         <div className="container banner-grid">
-//           <div>
-//             <h1 className="banner-heading">
-//               Master Online Learning with PvClasses
-//             </h1>
-//             <p className="banner-subtext">
-//               Explore expertly crafted courses in programming, design, development, and more – built to help you grow your skills and career from anywhere.
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-
-//       <section className="blog-section">
-//         <div className="container">
-//           <h2 className="section-title">Latest Articles</h2>
-//           <p className="section-subtext">Stay updated with our latest insights, news, and tips</p>
-
-//           <div className="filter-box">
-//             <input
-//               type="text"
-//               placeholder="Search articles..."
-//               className="filter-input"
-//               value={searchQuery}
-//               onChange={(e) => setSearchQuery(e.target.value)}
-//             />
-//             {(selectedCategories.length > 0 || searchQuery) && (
-//               <button
-//                 className="clear-button"
-//                 onClick={() => {
-//                   setSelectedCategories([]);
-//                   setSearchQuery("");
-//                 }}
-//               >
-//                 Clear Filters
-//               </button>
-//             )}
-//           </div>
-
-//           {filteredPosts.length > 0 ? (
-//             <div className="post-grid">
-//               {filteredPosts.map((post, index) => (
-//                 <Link key={index} href={`/blog/${post.slug}`}>
-//                   <div className="post-card">
-//                     <Image
-//                       src={post.image || "/images/default-blog-image.jpg"}
-//                       alt={post.title}
-//                       width={400}
-//                       height={240}
-//                       className="rounded-t-md"
-//                     />
-//                     <div className="pt-3">
-//                       <p className="text-gray-500 text-sm flex items-center gap-2">
-//                         <span>📅 {post.created_at.split(" ")[0]}</span>
-//                         <span>👤 Admin</span>
-//                       </p>
-//                       <h3 className="text-lg font-semibold mt-1 line-clamp-2">
-//                         {post.title}
-//                       </h3>
-//                       <p className="text-gray-600 text-sm mt-1 line-clamp-2">
-//                         {post.summary}
-//                       </p>
-//                     </div>
-//                   </div>
-//                 </Link>
-//               ))}
-//             </div>
-//           ) : (
-//             <div className="no-posts">
-//               <h3>No articles found</h3>
-//               <p>Try adjusting your search or filter criteria.</p>
-//               <button
-//                 className="clear-button"
-//                 onClick={() => {
-//                   setSelectedCategories([]);
-//                   setSearchQuery("");
-//                 }}
-//               >
-//                 Clear Filters
-//               </button>
-//             </div>
-//           )}
-
-//           {loading && <div className="loading-spinner"></div>}
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-
-
-
 "use client"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import axios from "axios"
 import Image from "next/image"
+import "@/app/styles/education-blog.css"
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([])
@@ -312,7 +91,6 @@ export default function BlogPage() {
         fetchBlogs(nextPage)
       }
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [loading, hasMore, page])
@@ -331,7 +109,7 @@ export default function BlogPage() {
   return (
     <>
       <div className="blog-enhanced-banner">
-        <div className="blog-enhanced-banner-overlay"></div>
+     
         <div className="blog-enhanced-container blog-enhanced-banner-grid">
           <div className="blog-enhanced-banner-content">
             <div className="blog-enhanced-badge">
@@ -379,7 +157,6 @@ export default function BlogPage() {
               <h2 className="blog-enhanced-section-title">Latest Articles</h2>
               <p className="blog-enhanced-section-subtext">Stay updated with our latest insights, news, and tips</p>
             </div>
-
             <div className="blog-enhanced-filter-container">
               <div className="blog-enhanced-search-wrapper">
                 <div className="blog-enhanced-search-icon">🔍</div>
@@ -400,7 +177,6 @@ export default function BlogPage() {
                   </button>
                 )}
               </div>
-
               {(selectedCategories.length > 0 || searchQuery) && (
                 <button
                   className="blog-enhanced-clear-button"
@@ -433,7 +209,6 @@ export default function BlogPage() {
                         <span className="blog-enhanced-read-more">Read Article</span>
                       </div>
                     </div>
-
                     <div className="blog-enhanced-post-content">
                       <div className="blog-enhanced-post-meta">
                         <span className="blog-enhanced-meta-item">
@@ -449,11 +224,8 @@ export default function BlogPage() {
                           Admin
                         </span>
                       </div>
-
                       <h3 className="blog-enhanced-post-title">{post.title}</h3>
-
                       <p className="blog-enhanced-post-summary">{post.summary}</p>
-
                       <div className="blog-enhanced-read-more-section">
                         <span className="blog-enhanced-read-more-text">Read More</span>
                         <span className="blog-enhanced-arrow">→</span>

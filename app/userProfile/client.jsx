@@ -1,870 +1,12 @@
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import "../styles/UserProfile.css";
-// import "@/app/styles/bootstrap.css";
-// import "@/app/styles/main.css";
-// import "@/app/styles/responsive.css";
-// import "@/app/styles/font-awesome.css";
-// import Image from "next/image";
-// import {
-//   // FaSearch,
-//   FaUserEdit,
-//   FaTimes,
-//   FaSignOutAlt,
-//   FaSave,
-//   FaUser,
-//   FaEnvelope,
-//   FaPhone,
-//   FaVenusMars,
-//   FaUserTag,
-//   FaCalendarAlt,
-// } from "react-icons/fa";
-// import api from "@/utils/axios";
-// import toast, { Toaster } from "react-hot-toast";
-// import CourseProgressCard from "./enrollment";
-// import { Link } from "lucide-react";
-
-// const UserProfile = () => {
-//   const [user, setUser] = useState(null);
-//   const [editMode, setEditMode] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [enrolledCourses, setEnrolledCourses] = useState([]);
-
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     email: "",
-//     bio: "",
-//     avatar: "",
-//     phoneNumber: "",
-//     gender: "",
-//     role: "student",
-//     createdAt: new Date(),
-//   });
-
-//   const userdetails = JSON.parse(localStorage.getItem("user"));
-//   // const token = localStorage.getItem("token");
-//   useEffect(() => {
-//     const getEnrolledCourses = async () => {
-//       try {
-//         const response = await api.get("/enrollments");
-//         const data = response.data;
-//         setEnrolledCourses(data.data || []);
-
-//         if (!data.success) {
-//           throw new Error(data.message || "Failed to fetch user profile");
-//         }
-//       } catch (err) {
-//         console.error("Error fetching user profile:", err);
-//       }
-//     };
-//     getEnrolledCourses();
-//   }, []);
-//   useEffect(() => {
-//     if (userdetails) {
-//       setUser(userdetails);
-//       setFormData({
-//         name: userdetails?.name,
-//         email: userdetails?.email,
-//         bio: userdetails?.bio || "",
-//         avatar: userdetails?.avatar || "",
-//         phoneNumber: userdetails?.phoneNumber || "",
-//         gender: userdetails?.gender || "",
-//         role: userdetails?.role || "student",
-//         createdAt: userdetails?.createdAt || new Date(),
-//       });
-//     } else {
-//       window.location.href = "/login";
-//     }
-//   }, []);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleAvatarChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       setFormData((prev) => ({
-//         ...prev,
-//         avatar: file,
-//       }));
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setIsLoading(true);
-//     setError(null);
-
-//     try {
-//       const formDataToSend = new FormData();
-//       formDataToSend.append("name", formData.name);
-//       formDataToSend.append("email", formData.email);
-//       formDataToSend.append("bio", formData.bio);
-//       formDataToSend.append("phoneNumber", formData.phoneNumber);
-//       formDataToSend.append("gender", formData.gender);
-//       if (formData.avatar) {
-//         formDataToSend.append("avatar", formData.avatar);
-//       }
-//       const response = await api.put("/auth/updateprofile", formDataToSend);
-//       const data = response.data;
-
-//       if (!data.success) {
-//         throw new Error(data.message || "Failed to update profile");
-//       }
-//       // Update local storage with new user data
-//       const updatedUser = { ...userdetails, ...data.data };
-//       localStorage.setItem("user", JSON.stringify(updatedUser));
-//       setUser(updatedUser);
-//       setEditMode(false);
-//       toast.success("Profile updated successfully!");
-//     } catch (err) {
-//     //   console.log("Profile update error:", err);
-//       setError(err.message);
-//       toast.error(`Error updating profile: ${err.message}`);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   if (!user) {
-//     return <div className="profile-loading">Loading profile...</div>;
-//   }
-
-//   return (
-//     <>
-//       <Toaster />
-//       <section className="page-title">
-//         <div className="auto-container">
-//           <h1>User Profile</h1>
-
-//           {/* Search Box */}
-//           {/* <div className="search-boxed">
-//             <div className="search-box">
-//               <form method="post">
-//                 <div className="form-group">
-//                   <input
-//                     type="search"
-//                     name="search-field"
-//                     placeholder="What do you want to learn?"
-//                     required
-//                   />
-//                   <button type="submit">
-//                     <span className="icon">
-//                       <FaSearch />
-//                     </span>
-//                   </button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div> */}
-//         </div>
-//       </section>
-
-//       <div className="profile-container">
-//         <div className="profile-header">
-//           <h2>Welcome! {user?.name} </h2>
-//           <div className="header-actions">
-//             {!editMode ? (
-//               <button className="edit-btn" onClick={() => setEditMode(true)}>
-//                 <FaUserEdit /> Edit Profile
-//               </button>
-//             ) : null}
-//             <button
-//               className="edit-btn"
-//               onClick={() => {
-//                 localStorage.removeItem("user");
-//                 localStorage.removeItem("token");
-//                 window.location.href = "/login";
-//               }}
-//             >
-//               <FaSignOutAlt /> Log Out
-//             </button>
-//           </div>
-//         </div>
-
-//         {error && <div className="error-message">{error}</div>}
-
-//         <div className="profile-content">
-//           {editMode ? (
-//             <form onSubmit={handleSubmit} className="profile-form">
-//               <div className="form-columns">
-//                 <div className="form-left">
-//                   <div className="form-group avatar-group">
-//                     <label htmlFor="avatar" className="avatar-label">
-//                       <img
-//                         src={
-//                           typeof formData.avatar === "string"
-//                             ? formData.avatar
-//                             : URL.createObjectURL(formData.avatar)
-//                         }
-//                         alt="Profile"
-//                         className="profile-avatar editable"
-//                       />
-
-//                       <div className="avatar-edit-overlay">
-//                         <span className="avatar-edit-text">Change Photo</span>
-//                       </div>
-//                     </label>
-//                     <input
-//                       type="file"
-//                       id="avatar"
-//                       name="avatar"
-//                       accept="image/*"
-//                       onChange={handleAvatarChange}
-//                       className="avatar-input"
-//                     />
-//                   </div>
-//                 </div>
-
-//                 <div className="form-right">
-//                   <div className="form-group">
-//                     <label htmlFor="name">
-//                       <FaUser /> Name
-//                     </label>
-//                     <input
-//                       type="text"
-//                       id="name"
-//                       name="name"
-//                       value={formData.name}
-//                       onChange={handleChange}
-//                       required
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="email">
-//                       <FaEnvelope /> Email
-//                     </label>
-//                     <input
-//                       type="email"
-//                       id="email"
-//                       name="email"
-//                       value={formData.email}
-//                       onChange={handleChange}
-//                       required
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="phoneNumber">
-//                       <FaPhone /> Phone Number
-//                     </label>
-//                     <input
-//                       type="tel"
-//                       id="phoneNumber"
-//                       name="phoneNumber"
-//                       value={formData.phoneNumber}
-//                       onChange={handleChange}
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="gender">
-//                       <FaVenusMars /> Gender
-//                     </label>
-//                     <select
-//                       id="gender"
-//                       name="gender"
-//                       value={formData.gender}
-//                       onChange={handleChange}
-//                     >
-//                       <option value="">Select Gender</option>
-//                       <option value="Male">Male</option>
-//                       <option value="Female">Female</option>
-//                       <option value="Other">Other</option>
-//                     </select>
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="bio">About Me</label>
-//                     <textarea
-//                       id="bio"
-//                       name="bio"
-//                       value={formData.bio}
-//                       onChange={handleChange}
-//                       maxLength="500"
-//                       rows="4"
-//                       placeholder="Tell us about yourself..."
-//                     />
-//                     <div className="character-count">
-//                       {formData.bio.length}/500 characters
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="form-actions">
-//                 <button
-//                   type="button"
-//                   className="cancel-btn"
-//                   onClick={() => setEditMode(false)}
-//                   disabled={isLoading}
-//                 >
-//                   <FaTimes /> Cancel
-//                 </button>
-//                 <button type="submit" className="save-btn" disabled={isLoading}>
-//                   {isLoading ? (
-//                     "Saving..."
-//                   ) : (
-//                     <>
-//                       <FaSave /> Save Changes
-//                     </>
-//                   )}
-//                 </button>
-//               </div>
-//             </form>
-//           ) : (
-//             <div className="profile-view">
-//               <div className="profile-info">
-//                 <Image
-//                   src={user?.avatar || "/default-avatar.png"}
-//                   alt="Profile"
-//                   className="profile-avatar"
-//                   width={150}
-//                   height={150}
-//                   priority
-//                 />
-//                 <div className="profile-details">
-//                   <h3>
-//                     <FaUser /> {user?.name}
-//                   </h3>
-//                   <p className="detail-item">
-//                     <FaEnvelope /> {user?.email}
-//                   </p>
-//                   {user?.phoneNumber && (
-//                     <p className="detail-item">
-//                       <FaPhone /> {user?.phoneNumber}
-//                     </p>
-//                   )}
-//                   {user?.gender && (
-//                     <p className="detail-item">
-//                       <FaVenusMars /> {user?.gender}
-//                     </p>
-//                   )}
-//                   <p className="detail-item">
-//                     <FaUserTag /> {user?.role}
-//                   </p>
-//                   {user?.createdAt && (
-//                     <p className="detail-item">
-//                       <FaCalendarAlt /> Member since:{" "}
-//                       {new Date(user?.createdAt).toLocaleDateString("en-IN", {
-//                         year: "numeric",
-//                         month: "long",
-//                         day: "numeric",
-//                       })}
-//                     </p>
-//                   )}
-//                 </div>
-//               </div>
-
-//               {user?.bio && (
-//                 <div className="profile-bio">
-//                   <h4>About Me</h4>
-//                   <p>{user?.bio}</p>
-//                 </div>
-//               )}
-//             </div>
-//           )}
-//         </div>
-//         {enrolledCourses.length === 0 ? (
-//           <div className="no-courses-message">
-//             <p>You haven't enrolled in any courses yet.</p>
-//             <Link href="/courses" className="browse-courses-btn">
-//               Browse Courses
-//             </Link>
-//           </div>
-//         ) : (
-//           <div className="courses-grid">
-//             {enrolledCourses.map((enrollment) => (
-//               <CourseProgressCard
-//                 key={enrollment._id}
-//                 enrollment={enrollment}
-//               />
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default UserProfile;
-
-
-
-
-
-
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import "../styles/UserProfile.css";
-// import "@/app/styles/bootstrap.css";
-// import "@/app/styles/main.css";
-// import "@/app/styles/responsive.css";
-// import "@/app/styles/font-awesome.css";
-// import Image from "next/image";
-// import {
-//   FaUserEdit,
-//   FaTimes,
-//   FaSignOutAlt,
-//   FaSave,
-//   FaUser,
-//   FaEnvelope,
-//   FaPhone,
-//   FaVenusMars,
-//   FaUserTag,
-//   FaCalendarAlt,
-// } from "react-icons/fa";
-// import api from "@/utils/axios";
-// import toast, { Toaster } from "react-hot-toast";
-// import CourseProgressCard from "./enrollment";
-// import { Link } from "lucide-react";
-
-// const UserProfile = () => {
-//   const [user, setUser] = useState(null);
-//   const [editMode, setEditMode] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [enrolledCourses, setEnrolledCourses] = useState([]);
-//   const [activeTab, setActiveTab] = useState("profile");
-
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     email: "",
-//     bio: "",
-//     avatar: "",
-//     phoneNumber: "",
-//     gender: "",
-//     role: "student",
-//     createdAt: new Date(),
-//   });
-
-//   const userdetails = JSON.parse(localStorage.getItem("user"));
-  
-//   useEffect(() => {
-//     const getEnrolledCourses = async () => {
-//       try {
-//         const response = await api.get("/enrollments");
-//         const data = response.data;
-//         setEnrolledCourses(data.data || []);
-
-//         if (!data.success) {
-//           throw new Error(data.message || "Failed to fetch user profile");
-//         }
-//       } catch (err) {
-//         console.error("Error fetching user profile:", err);
-//       }
-//     };
-//     getEnrolledCourses();
-//   }, []);
-  
-//   useEffect(() => {
-//     if (userdetails) {
-//       setUser(userdetails);
-//       setFormData({
-//         name: userdetails?.name,
-//         email: userdetails?.email,
-//         bio: userdetails?.bio || "",
-//         avatar: userdetails?.avatar || "",
-//         phoneNumber: userdetails?.phoneNumber || "",
-//         gender: userdetails?.gender || "",
-//         role: userdetails?.role || "student",
-//         createdAt: userdetails?.createdAt || new Date(),
-//       });
-//     } else {
-//       window.location.href = "/login";
-//     }
-//   }, []);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleAvatarChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       setFormData((prev) => ({
-//         ...prev,
-//         avatar: file,
-//       }));
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setIsLoading(true);
-//     setError(null);
-
-//     try {
-//       const formDataToSend = new FormData();
-//       formDataToSend.append("name", formData.name);
-//       formDataToSend.append("email", formData.email);
-//       formDataToSend.append("bio", formData.bio);
-//       formDataToSend.append("phoneNumber", formData.phoneNumber);
-//       formDataToSend.append("gender", formData.gender);
-//       if (formData.avatar) {
-//         formDataToSend.append("avatar", formData.avatar);
-//       }
-//       const response = await api.put("/auth/updateprofile", formDataToSend);
-//       const data = response.data;
-
-//       if (!data.success) {
-//         throw new Error(data.message || "Failed to update profile");
-//       }
-//       // Update local storage with new user data
-//       const updatedUser = { ...userdetails, ...data.data };
-//       localStorage.setItem("user", JSON.stringify(updatedUser));
-//       setUser(updatedUser);
-//       setEditMode(false);
-//       toast.success("Profile updated successfully!");
-//     } catch (err) {
-//       setError(err.message);
-//       toast.error(`Error updating profile: ${err.message}`);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   if (!user) {
-//     return (
-//       <div className="profile-loading">
-//         <div className="loading-spinner"></div>
-//         <p>Loading your profile...</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <Toaster position="top-right" />
-//       <div className="modern-profile-container">
-//         <div className="profile-header-card">
-//           <div className="avatar-container">
-//             <div className="avatar-wrapper">
-//               <Image
-//                 src={user?.avatar || "/default-avatar.png"}
-//                 alt="Profile"
-//                 width={120}
-//                 height={120}
-//                 className="profile-avatar"
-//                 priority
-//               />
-//               {/* {!editMode && (
-//                 <button 
-//                   className="edit-avatar-btn"
-//                   onClick={() => document.getElementById('avatar-input').click()}
-//                 >
-//                   <FaUserEdit />
-//                 </button>
-//               )} */}
-//             </div>
-//             <h1>{user?.name}</h1>
-//             <p className="user-role">{user?.role}</p>
-//           </div>
-          
-//           <div className="header-actions">
-//             {!editMode ? (
-//               <button className="action-btn primary" onClick={() => setEditMode(true)}>
-//                 <FaUserEdit /> Edit Profile
-//               </button>
-//             ) : null}
-//             <button
-//               className="action-btn secondary"
-//               onClick={() => {
-//                 localStorage.removeItem("user");
-//                 localStorage.removeItem("token");
-//                 window.location.href = "/login";
-//               }}
-//             >
-//               <FaSignOutAlt /> Log Out
-//             </button>
-//           </div>
-//         </div>
-
-//         <div className="profile-tabs">
-//           <button 
-//             className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
-//             onClick={() => setActiveTab('profile')}
-//           >
-//             Profile
-//           </button>
-//           <button 
-//             className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
-//             onClick={() => setActiveTab('courses')}
-//           >
-//             My Courses
-//           </button>
-//         </div>
-
-//         <div className="profile-content">
-//           {activeTab === 'profile' ? (
-//             editMode ? (
-//               <form onSubmit={handleSubmit} className="profile-form">
-//                 {error && <div className="error-message">{error}</div>}
-
-//                 <div className="form-grid">
-//                   <div className="form-group avatar-group">
-//                     <label htmlFor="avatar" className="avatar-label">
-//                       <div className="avatar-preview">
-//                         {formData.avatar ? (
-//                           <img
-//                             src={
-//                               typeof formData.avatar === "string"
-//                                 ? formData.avatar
-//                                 : URL.createObjectURL(formData.avatar)
-//                             }
-//                             alt="Profile"
-//                             className="editable-avatar"
-//                           />
-//                         ) : (
-//                           <div className="avatar-placeholder">
-//                             <FaUser size={40} />
-//                           </div>
-//                         )}
-//                         <div className="avatar-overlay">
-//                           <span>Change Photo</span>
-//                         </div>
-//                       </div>
-//                     </label>
-//                     <input
-//                       type="file"
-//                       id="avatar-input"
-//                       name="avatar"
-//                       accept="image/*"
-//                       onChange={handleAvatarChange}
-//                       className="avatar-input"
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="name">
-//                       <FaUser /> Full Name
-//                     </label>
-//                     <input
-//                       type="text"
-//                       id="name"
-//                       name="name"
-//                       value={formData.name}
-//                       onChange={handleChange}
-//                       required
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="email">
-//                       <FaEnvelope /> Email Address
-//                     </label>
-//                     <input
-//                       type="email"
-//                       id="email"
-//                       name="email"
-//                       value={formData.email}
-//                       onChange={handleChange}
-//                       required
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="phoneNumber">
-//                       <FaPhone /> Phone Number
-//                     </label>
-//                     <input
-//                       type="tel"
-//                       id="phoneNumber"
-//                       name="phoneNumber"
-//                       value={formData.phoneNumber}
-//                       onChange={handleChange}
-//                       placeholder="+1 (555) 123-4567"
-//                     />
-//                   </div>
-
-//                   <div className="form-group">
-//                     <label htmlFor="gender">
-//                       <FaVenusMars /> Gender
-//                     </label>
-//                     <select
-//                       id="gender"
-//                       name="gender"
-//                       value={formData.gender}
-//                       onChange={handleChange}
-//                     >
-//                       <option value="">Select Gender</option>
-//                       <option value="Male">Male</option>
-//                       <option value="Female">Female</option>
-//                       <option value="Other">Other</option>
-//                       <option value="Prefer not to say">Prefer not to say</option>
-//                     </select>
-//                   </div>
-
-//                   <div className="form-group full-width">
-//                     <label htmlFor="bio">About Me</label>
-//                     <textarea
-//                       id="bio"
-//                       name="bio"
-//                       value={formData.bio}
-//                       onChange={handleChange}
-//                       maxLength="500"
-//                       rows="4"
-//                       placeholder="Tell us about yourself, your interests, and your goals..."
-//                     />
-//                     <div className="character-count">
-//                       {formData.bio.length}/500 characters
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="form-actions">
-//                   <button
-//                     type="button"
-//                     className="cancel-btn"
-//                     onClick={() => setEditMode(false)}
-//                     disabled={isLoading}
-//                   >
-//                     <FaTimes /> Cancel
-//                   </button>
-//                   <button type="submit" className="save-btn" disabled={isLoading}>
-//                     {isLoading ? (
-//                       "Saving..."
-//                     ) : (
-//                       <>
-//                         <FaSave /> Save Changes
-//                       </>
-//                     )}
-//                   </button>
-//                 </div>
-//               </form>
-//             ) : (
-//               <div className="profile-view">
-//                 <div className="profile-details-grid">
-//                   <div className="detail-item">
-//                     <FaUser className="detail-icon" />
-//                     <div>
-//                       <span className="detail-label">Full Name</span>
-//                       <span className="detail-value">{user?.name}</span>
-//                     </div>
-//                   </div>
-                  
-//                   <div className="detail-item">
-//                     <FaEnvelope className="detail-icon" />
-//                     <div>
-//                       <span className="detail-label">Email</span>
-//                       <span className="detail-value">{user?.email}</span>
-//                     </div>
-//                   </div>
-                  
-//                   {user?.phoneNumber && (
-//                     <div className="detail-item">
-//                       <FaPhone className="detail-icon" />
-//                       <div>
-//                         <span className="detail-label">Phone</span>
-//                         <span className="detail-value">{user?.phoneNumber}</span>
-//                       </div>
-//                     </div>
-//                   )}
-                  
-//                   {user?.gender && (
-//                     <div className="detail-item">
-//                       <FaVenusMars className="detail-icon" />
-//                       <div>
-//                         <span className="detail-label">Gender</span>
-//                         <span className="detail-value">{user?.gender}</span>
-//                       </div>
-//                     </div>
-//                   )}
-                  
-//                   <div className="detail-item">
-//                     <FaCalendarAlt className="detail-icon" />
-//                     <div>
-//                       <span className="detail-label">Member Since</span>
-//                       <span className="detail-value">
-//                         {new Date(user?.createdAt).toLocaleDateString("en-IN", {
-//                           year: "numeric",
-//                           month: "long",
-//                           day: "numeric",
-//                         })}
-//                       </span>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {user?.bio && (
-//                   <div className="profile-bio-section">
-//                     <h3>About Me</h3>
-//                     <p className="bio-content">{user?.bio}</p>
-//                   </div>
-//                 )}
-//               </div>
-//             )
-//           ) : (
-//             <div className="courses-section">
-//               <h2 className="section-title">My Learning Journey</h2>
-              
-//               {enrolledCourses.length === 0 ? (
-//                 <div className="no-courses-card">
-//                   <div className="empty-state">
-//                     <Image 
-//                       src="/empty-courses.svg" 
-//                       alt="No courses" 
-//                       width={200} 
-//                       height={200}
-//                     />
-//                     <h3>You haven't enrolled in any courses yet</h3>
-//                     <p>Start your learning journey by exploring our courses</p>
-//                     <a href="/courses" className="primary-btn">
-//                       Browse Courses
-//                     </a>
-//                   </div>
-//                 </div>
-//               ) : (
-//                 <div className="courses-grid">
-//                   {enrolledCourses.map((enrollment) => (
-//                     <CourseProgressCard
-//                       key={enrollment._id}
-//                       enrollment={enrollment}
-//                     />
-//                   ))}
-//                 </div>
-//               )}
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default UserProfile;
-
-
 "use client"
 import { useState, useEffect } from "react"
 import "@/app/styles/bootstrap.css"
 import "@/app/styles/main.css"
 import "@/app/styles/responsive.css"
 import "@/app/styles/font-awesome.css"
-// import "./styles/user-profile-enhanced.css" // Import the new enhanced CSS
+import "@/app/styles/user-profile.css"
 import Image from "next/image"
-import {
-  FaUserEdit,
-  FaTimes,
-  FaSignOutAlt,
-  FaSave,
-  FaUser,
-  FaEnvelope,
-  FaPhone,
-  FaVenusMars,
-  FaCalendarAlt,
-} from "react-icons/fa"
+import { FaTimes, FaSave, FaUser, FaCheck, FaCrown, FaGraduationCap } from "react-icons/fa"
 import api from "@/utils/axios"
 import toast, { Toaster } from "react-hot-toast"
 import CourseProgressCard from "./enrollment"
@@ -886,6 +28,7 @@ const UserProfile = () => {
     role: "student",
     createdAt: new Date(),
   })
+
   const userdetails = JSON.parse(localStorage.getItem("user"))
 
   useEffect(() => {
@@ -944,6 +87,7 @@ const UserProfile = () => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
+
     try {
       const formDataToSend = new FormData()
       formDataToSend.append("name", formData.name)
@@ -951,15 +95,18 @@ const UserProfile = () => {
       formDataToSend.append("bio", formData.bio)
       formDataToSend.append("phoneNumber", formData.phoneNumber)
       formDataToSend.append("gender", formData.gender)
+
       if (formData.avatar) {
         formDataToSend.append("avatar", formData.avatar)
       }
+
       const response = await api.put("/auth/updateprofile", formDataToSend)
       const data = response.data
+
       if (!data.success) {
         throw new Error(data.message || "Failed to update profile")
       }
-      // Update local storage with new user data
+
       const updatedUser = { ...userdetails, ...data.data }
       localStorage.setItem("user", JSON.stringify(updatedUser))
       setUser(updatedUser)
@@ -973,12 +120,20 @@ const UserProfile = () => {
     }
   }
 
+  // Split name into first and last name
+  const getFirstName = () => {
+    return user?.name?.split(" ")[0] || ""
+  }
+
+  const getLastName = () => {
+    return user?.name?.split(" ").slice(1).join(" ") || ""
+  }
+
   if (isLoading || !user) {
-    // Check isLoading here too for initial fetch
     return (
       <div className="user-profile-enhanced-profile-loading">
         <div className="user-profile-enhanced-loading-spinner"></div>
-        <p>Loading your profile...</p>
+        <p>Loading your amazing profile...</p>
       </div>
     )
   }
@@ -986,260 +141,331 @@ const UserProfile = () => {
   return (
     <>
       <Toaster position="top-right" />
-      <br />
       <div className="user-profile-enhanced-container">
-        <br />
-        <div className="user-profile-enhanced-header-card">
-          <div className="user-profile-enhanced-avatar-container">
-            <div className="user-profile-enhanced-avatar-wrapper">
-              <Image
-                src={user?.avatar || "/placeholder.svg?height=120&width=120&text=Profile"}
-                alt="Profile"
-                width={120}
-                height={120}
-                className="user-profile-enhanced-profile-avatar"
-                priority
-              />
+        {/* Attractive Page Header */}
+        <div className="user-profile-enhanced-page-header">
+          <h1 className="user-profile-enhanced-page-title">✨ User Profile ✨</h1>
+          <p className="user-profile-enhanced-page-subtitle">
+            Manage your details, view your tier status and unlock your potential
+          </p>
+        </div>
+
+        {/* Main Layout */}
+        <div className="user-profile-enhanced-main-layout">
+          {/* Attractive Left Profile Card */}
+          <div className="user-profile-enhanced-profile-card">
+            <div className="user-profile-enhanced-avatar-section">
+              {editMode ? (
+                <div className="user-profile-enhanced-avatar-upload">
+                  <label htmlFor="avatar-input">
+                    <div className="user-profile-enhanced-avatar-preview">
+                      {formData.avatar ? (
+                        <img
+                          src={
+                            typeof formData.avatar === "string" ? formData.avatar : URL.createObjectURL(formData.avatar)
+                          }
+                          alt="Profile"
+                          className="user-profile-enhanced-editable-avatar"
+                        />
+                      ) : (
+                        <div className="user-profile-enhanced-avatar-placeholder">
+                          <FaUser size={32} />
+                        </div>
+                      )}
+                      <div className="user-profile-enhanced-avatar-overlay">
+                        <span>✨ Change Photo</span>
+                      </div>
+                    </div>
+                  </label>
+                  <input
+                    type="file"
+                    id="avatar-input"
+                    name="avatar"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="user-profile-enhanced-avatar-input"
+                  />
+                </div>
+              ) : (
+                <Image
+                  src={user?.avatar || "/placeholder.svg?height=120&width=120&text=Profile"}
+                  alt="Profile"
+                  width={120}
+                  height={120}
+                  className="user-profile-enhanced-profile-avatar"
+                  priority
+                />
+              )}
+
+              <h2 className="user-profile-enhanced-user-name">{user?.name}</h2>
+              <p className="user-profile-enhanced-user-phone">
+                {user?.phoneNumber || "+965 1234 5678"}
+                <FaCheck className="user-profile-enhanced-verified-icon" />
+              </p>
+              <div className="user-profile-enhanced-user-badge">
+                <FaCrown />
+                Premium Member
+              </div>
             </div>
-            <h1>{user?.name}</h1>
-            <p className="user-profile-enhanced-user-role">{user?.role}</p>
-          </div>
 
-          <div className="user-profile-enhanced-header-actions">
-            {!editMode ? (
-              <button className="user-profile-enhanced-action-btn primary" onClick={() => setEditMode(true)}>
-                <FaUserEdit /> Edit Profile
+            {/* Attractive Navigation */}
+            <nav className="user-profile-enhanced-nav">
+              <button
+                className={`user-profile-enhanced-nav-item ${activeTab === "profile" ? "active" : ""}`}
+                onClick={() => setActiveTab("profile")}
+              >
+                👤 Profile Information
               </button>
-            ) : null}
-            <button
-              className="user-profile-enhanced-action-btn secondary"
-              onClick={() => {
-                localStorage.removeItem("user")
-                localStorage.removeItem("token")
-                window.location.href = "/login"
-              }}
-            >
-              <FaSignOutAlt /> Log Out
-            </button>
+              <button
+                className={`user-profile-enhanced-nav-item ${activeTab === "courses" ? "active" : ""}`}
+                onClick={() => setActiveTab("courses")}
+              >
+                📚 My Courses ({enrolledCourses.length})
+              </button>
+              <button
+                className="user-profile-enhanced-nav-item"
+                onClick={() => {
+                  localStorage.removeItem("user")
+                  localStorage.removeItem("token")
+                  window.location.href = "/login"
+                }}
+              >
+                🚪 Sign Out
+              </button>
+            </nav>
           </div>
-        </div>
 
-        <div className="user-profile-enhanced-profile-tabs">
-          <button
-            className={`user-profile-enhanced-tab-btn ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
-          >
-            Profile
-          </button>
-          <button
-            className={`user-profile-enhanced-tab-btn ${activeTab === "courses" ? "active" : ""}`}
-            onClick={() => setActiveTab("courses")}
-          >
-            My Courses
-          </button>
-        </div>
+          {/* Attractive Right Content Area */}
+          <div className="user-profile-enhanced-content-area">
+            {activeTab === "profile" ? (
+              <>
+                {error && <div className="user-profile-enhanced-error-message">❌ {error}</div>}
 
-        <div className="user-profile-enhanced-profile-content">
-          {activeTab === "profile" ? (
-            editMode ? (
-              <form onSubmit={handleSubmit} className="user-profile-enhanced-profile-form">
-                {error && <div className="user-profile-enhanced-error-message">{error}</div>}
-                <div className="user-profile-enhanced-form-grid">
-                  <div className="user-profile-enhanced-form-group user-profile-enhanced-avatar-group">
-                    <label htmlFor="avatar" className="user-profile-enhanced-avatar-label">
-                      <div className="user-profile-enhanced-avatar-preview">
-                        {formData.avatar ? (
-                          <img
-                            src={
-                              typeof formData.avatar === "string"
-                                ? formData.avatar
-                                : URL.createObjectURL(formData.avatar)
-                            }
-                            alt="Profile"
-                            className="user-profile-enhanced-editable-avatar"
+
+                {editMode ? (
+                  <form onSubmit={handleSubmit}>
+                    {/* General Information Section - Edit Mode */}
+                    <div className="user-profile-enhanced-section">
+                      <h3 className="user-profile-enhanced-section-title">✨ General Information</h3>
+                      <div className="user-profile-enhanced-info-grid">
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">👤 First Name</label>
+                          <input
+                            type="text"
+                            value={formData.name.split(" ")[0] || ""}
+                            onChange={(e) => {
+                              const lastName = formData.name.split(" ").slice(1).join(" ")
+                              setFormData((prev) => ({
+                                ...prev,
+                                name: `${e.target.value} ${lastName}`.trim(),
+                              }))
+                            }}
+                            className="user-profile-enhanced-field-input"
+                            required
                           />
-                        ) : (
-                          <div className="user-profile-enhanced-avatar-placeholder">
-                            <FaUser size={40} />
-                          </div>
-                        )}
-                        <div className="user-profile-enhanced-avatar-overlay">
-                          <span>Change Photo</span>
+                        </div>
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">👤 Last Name</label>
+                          <input
+                            type="text"
+                            value={formData.name.split(" ").slice(1).join(" ") || ""}
+                            onChange={(e) => {
+                              const firstName = formData.name.split(" ")[0] || ""
+                              setFormData((prev) => ({
+                                ...prev,
+                                name: `${firstName} ${e.target.value}`.trim(),
+                              }))
+                            }}
+                            className="user-profile-enhanced-field-input"
+                          />
                         </div>
                       </div>
-                    </label>
-                    <input
-                      type="file"
-                      id="avatar-input"
-                      name="avatar"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      className="user-profile-enhanced-avatar-input"
-                    />
-                  </div>
-                  <div className="user-profile-enhanced-form-group">
-                    <label htmlFor="name">
-                      <FaUser /> Full Name
-                    </label>
-                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
-                  </div>
-                  <div className="user-profile-enhanced-form-group">
-                    <label htmlFor="email">
-                      <FaEnvelope /> Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="user-profile-enhanced-form-group">
-                    <label htmlFor="phoneNumber">
-                      <FaPhone /> Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      placeholder="+1 (555) 123-4567"
-                    />
-                  </div>
-                  <div className="user-profile-enhanced-form-group">
-                    <label htmlFor="gender">
-                      <FaVenusMars /> Gender
-                    </label>
-                    <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                      <option value="Prefer not to say">Prefer not to say</option>
-                    </select>
-                  </div>
-                  <div className="user-profile-enhanced-form-group full-width">
-                    <label htmlFor="bio">About Me</label>
-                    <textarea
-                      id="bio"
-                      name="bio"
-                      value={formData.bio}
-                      onChange={handleChange}
-                      maxLength="500"
-                      rows="4"
-                      placeholder="Tell us about yourself, your interests, and your goals..."
-                    />
-                    <div className="user-profile-enhanced-character-count">{formData.bio.length}/500 characters</div>
-                  </div>
-                </div>
-                <div className="user-profile-enhanced-form-actions">
-                  <button
-                    type="button"
-                    className="user-profile-enhanced-cancel-btn"
-                    onClick={() => setEditMode(false)}
-                    disabled={isLoading}
-                  >
-                    <FaTimes /> Cancel
-                  </button>
-                  <button type="submit" className="user-profile-enhanced-save-btn" disabled={isLoading}>
-                    {isLoading ? (
-                      "Saving..."
-                    ) : (
-                      <>
-                        <FaSave /> Save Changes
-                      </>
+
+                      <div className="user-profile-enhanced-info-grid">
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">📱 Phone Number</label>
+                          <input
+                            type="tel"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            className="user-profile-enhanced-field-input"
+                            placeholder="Enter phone number"
+                          />
+                        </div>
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">⚧ Gender</label>
+                          <select
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            className="user-profile-enhanced-field-input"
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Bio Section */}
+                      {formData.bio !== undefined && (
+                        <div className="user-profile-enhanced-bio-section">
+                          <div className="user-profile-enhanced-field-group">
+                            <label className="user-profile-enhanced-field-label">📝 About Me</label>
+                            <textarea
+                              name="bio"
+                              value={formData.bio}
+                              onChange={handleChange}
+                              maxLength="500"
+                              className="user-profile-enhanced-field-input user-profile-enhanced-bio-textarea"
+                              placeholder="Tell us about yourself..."
+                            />
+                            <div className="user-profile-enhanced-character-count">
+                              {formData.bio.length}/500 characters
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Security Section - Edit Mode */}
+                    <div className="user-profile-enhanced-section">
+                      <h3 className="user-profile-enhanced-section-title">🔒 Security</h3>
+                      <div className="user-profile-enhanced-security-grid">
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">📧 Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="user-profile-enhanced-field-input"
+                            required
+                          />
+                        </div>
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">🔐 Password</label>
+                          <div className="user-profile-enhanced-security-value user-profile-enhanced-password-dots">
+                            ••••••
+                          </div>
+                        </div>
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">📱 Phone</label>
+                          <div className="user-profile-enhanced-security-value">
+                            {formData.phoneNumber || user?.phoneNumber || "+965 1234 5678"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Edit Mode Buttons */}
+                    <div className="user-profile-enhanced-edit-buttons">
+                      <button
+                        type="button"
+                        className="user-profile-enhanced-btn secondary"
+                        onClick={() => setEditMode(false)}
+                        disabled={isLoading}
+                      >
+                        <FaTimes /> Cancel
+                      </button>
+                      <button type="submit" className="user-profile-enhanced-btn primary" disabled={isLoading}>
+                        {isLoading ? (
+                          "✨ Saving..."
+                        ) : (
+                          <>
+                            <FaSave /> Save Changes
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    {/* General Information Section - View Mode */}
+                    <div className="user-profile-enhanced-section">
+                      <h3 className="user-profile-enhanced-section-title">✨ General Information</h3>
+                      <div className="user-profile-enhanced-info-grid">
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">👤 First Name</label>
+                          <div className="user-profile-enhanced-field-value">{getFirstName()}</div>
+                        </div>
+                        <div className="user-profile-enhanced-field-group">
+                          <label className="user-profile-enhanced-field-label">👤 Last Name</label>
+                          <div className="user-profile-enhanced-field-value">{getLastName()}</div>
+                        </div>
+                      </div>
+
+                      <button className="user-profile-enhanced-update-btn" onClick={() => setEditMode(true)}>
+                        ✨ Update Profile
+                      </button>
+                    </div>
+
+                    {/* Security Section - View Mode */}
+                    <div className="user-profile-enhanced-section">
+                      <h3 className="user-profile-enhanced-section-title">🔒 Security</h3>
+                      <div className="user-profile-enhanced-security-grid">
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">📧 Email</label>
+                          <div className="user-profile-enhanced-security-value">{user?.email}</div>
+                        </div>
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">🔐 Password</label>
+                          <div className="user-profile-enhanced-security-value user-profile-enhanced-password-dots">
+                            ••••••
+                          </div>
+                        </div>
+                        <div className="user-profile-enhanced-security-field">
+                          <label className="user-profile-enhanced-security-label">📱 Phone</label>
+                          <div className="user-profile-enhanced-security-value">
+                            {user?.phoneNumber || "+965 1234 5678"}
+                          </div>
+                        </div>
+                      </div>
+
+                     
+                    </div>
+
+                    {/* Bio Section if exists */}
+                    {user?.bio && (
+                      <div className="user-profile-enhanced-section">
+                        <h3 className="user-profile-enhanced-section-title">📝 About Me</h3>
+                        <div className="user-profile-enhanced-field-value">{user.bio}</div>
+                      </div>
                     )}
-                  </button>
-                </div>
-              </form>
+                  </>
+                )}
+              </>
             ) : (
-              <div className="user-profile-enhanced-profile-view">
-                <div className="user-profile-enhanced-profile-details-grid">
-                  <div className="user-profile-enhanced-detail-item">
-                    <FaUser className="user-profile-enhanced-detail-icon" />
-                    <div>
-                      <span className="user-profile-enhanced-detail-label">Full Name</span>
-                      <span className="user-profile-enhanced-detail-value">{user?.name}</span>
-                    </div>
+              /* Courses Section */
+              <div className="user-profile-enhanced-courses-section">
+                <h3 className="user-profile-enhanced-section-title">📚 My Learning Journey</h3>
+
+                {enrolledCourses.length === 0 ? (
+                  <div className="user-profile-enhanced-no-courses">
+                    <Image
+                      src="/placeholder.svg?height=120&width=120&text=📚"
+                      alt="No courses"
+                      width={120}
+                      height={120}
+                    />
+                    <h3>🚀 Ready to Start Learning?</h3>
+                    <p>Discover amazing courses and unlock your potential!</p>
+                    <a href="/course" className="user-profile-enhanced-btn primary">
+                      <FaGraduationCap /> Explore Courses
+                    </a>
                   </div>
-                  <div className="user-profile-enhanced-detail-item">
-                    <FaEnvelope className="user-profile-enhanced-detail-icon" />
-                    <div>
-                      <span className="user-profile-enhanced-detail-label">Email</span>
-                      <span className="user-profile-enhanced-detail-value">{user?.email}</span>
-                    </div>
-                  </div>
-                  {user?.phoneNumber && (
-                    <div className="user-profile-enhanced-detail-item">
-                      <FaPhone className="user-profile-enhanced-detail-icon" />
-                      <div>
-                        <span className="user-profile-enhanced-detail-label">Phone</span>
-                        <span className="user-profile-enhanced-detail-value">{user?.phoneNumber}</span>
-                      </div>
-                    </div>
-                  )}
-                  {user?.gender && (
-                    <div className="user-profile-enhanced-detail-item">
-                      <FaVenusMars className="user-profile-enhanced-detail-icon" />
-                      <div>
-                        <span className="user-profile-enhanced-detail-label">Gender</span>
-                        <span className="user-profile-enhanced-detail-value">{user?.gender}</span>
-                      </div>
-                    </div>
-                  )}
-                  <div className="user-profile-enhanced-detail-item">
-                    <FaCalendarAlt className="user-profile-enhanced-detail-icon" />
-                    <div>
-                      <span className="user-profile-enhanced-detail-label">Member Since</span>
-                      <span className="user-profile-enhanced-detail-value">
-                        {new Date(user?.createdAt).toLocaleDateString("en-IN", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {user?.bio && (
-                  <div className="user-profile-enhanced-profile-bio-section">
-                    <h3>About Me</h3>
-                    <p className="user-profile-enhanced-bio-content">{user?.bio}</p>
+                ) : (
+                  <div className="user-profile-enhanced-courses-grid">
+                    {enrolledCourses.map((enrollment) => (
+                      <CourseProgressCard key={enrollment._id} enrollment={enrollment} />
+                    ))}
                   </div>
                 )}
               </div>
-            )
-          ) : (
-            <div className="user-profile-enhanced-courses-section">
-              <h2 className="user-profile-enhanced-section-title">My Learning Journey</h2>
-              {enrolledCourses.length === 0 ? (
-                <div className="user-profile-enhanced-no-courses-card">
-                  <div className="user-profile-enhanced-empty-state">
-                    <Image
-                      src="/placeholder.svg?height=200&width=200&text=No+Courses"
-                      alt="No courses"
-                      width={200}
-                      height={200}
-                    />
-                    <h3>You haven't enrolled in any courses yet</h3>
-                    <p>Start your learning journey by exploring our courses</p>
-                    <a href="/courses" className="user-profile-enhanced-primary-btn">
-                      Browse Courses
-                    </a>
-                  </div>
-                </div>
-              ) : (
-                <div className="user-profile-enhanced-courses-grid">
-                  {enrolledCourses.map((enrollment) => (
-                    <CourseProgressCard key={enrollment._id} enrollment={enrollment} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>
