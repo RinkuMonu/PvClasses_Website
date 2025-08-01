@@ -89,6 +89,11 @@ export default function Header() {
                     Courses
                   </Link>
                 </li>
+                  <li className="nav-item">
+                  <Link href="/blog" className="nav-link">
+                    Blog
+                  </Link>
+                </li>
                 <li className="nav-item dropdown">
                   <button
                     className="nav-link dropdown-toggle"
@@ -96,14 +101,14 @@ export default function Header() {
                     onBlur={() => setTimeout(closeAllDropdowns, 150)}
                   >
                     Profiles
-                    <FiChevronDown className={`dropdown-icon ${activeDropdown === "profiles" ? "active" : ""}`} />
+                    {/* <FiChevronDown className={`dropdown-icon ${activeDropdown === "profiles" ? "active" : ""}`} /> */}
                   </button>
                   <ul className={`dropdown-menu ${activeDropdown === "profiles" ? "active" : ""}`}>
-                    <li>
+                    {/* <li>
                       <Link href="/InstructorProfile" className="dropdown-link">
                         Instructor Profile
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link href="/userProfile" className="dropdown-link">
                         User Profile
@@ -111,15 +116,11 @@ export default function Header() {
                     </li>
                   </ul>
                 </li>
-                <li className="nav-item">
-                  <Link href="/blog" className="nav-link">
-                    Blog
-                  </Link>
-                </li>
+              
                 <li className="nav-item">
                   <Link href="/contact" className="nav-link">Contact</Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link href="/cart" className="nav-link">
                     <MdOutlineShoppingCart size={20} />
                   </Link>
@@ -172,11 +173,11 @@ export default function Header() {
                       Courses
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link href="/InstructorProfile" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>
                       Instructor Profile
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link href="/userProfile" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>
                       User Profile
@@ -192,11 +193,11 @@ export default function Header() {
                       Contact
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link href="/cart" className="mobile-link" onClick={() => setIsMobileMenuOpen(false)}>
                       Cart
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </nav>
               <div className="mobile-actions">

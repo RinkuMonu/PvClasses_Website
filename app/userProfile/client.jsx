@@ -401,14 +401,459 @@
 
 
 
-"use client";
-import React, { useState, useEffect } from "react";
-import "../styles/UserProfile.css";
-import "@/app/styles/bootstrap.css";
-import "@/app/styles/main.css";
-import "@/app/styles/responsive.css";
-import "@/app/styles/font-awesome.css";
-import Image from "next/image";
+// "use client";
+// import React, { useState, useEffect } from "react";
+// import "../styles/UserProfile.css";
+// import "@/app/styles/bootstrap.css";
+// import "@/app/styles/main.css";
+// import "@/app/styles/responsive.css";
+// import "@/app/styles/font-awesome.css";
+// import Image from "next/image";
+// import {
+//   FaUserEdit,
+//   FaTimes,
+//   FaSignOutAlt,
+//   FaSave,
+//   FaUser,
+//   FaEnvelope,
+//   FaPhone,
+//   FaVenusMars,
+//   FaUserTag,
+//   FaCalendarAlt,
+// } from "react-icons/fa";
+// import api from "@/utils/axios";
+// import toast, { Toaster } from "react-hot-toast";
+// import CourseProgressCard from "./enrollment";
+// import { Link } from "lucide-react";
+
+// const UserProfile = () => {
+//   const [user, setUser] = useState(null);
+//   const [editMode, setEditMode] = useState(false);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [enrolledCourses, setEnrolledCourses] = useState([]);
+//   const [activeTab, setActiveTab] = useState("profile");
+
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     email: "",
+//     bio: "",
+//     avatar: "",
+//     phoneNumber: "",
+//     gender: "",
+//     role: "student",
+//     createdAt: new Date(),
+//   });
+
+//   const userdetails = JSON.parse(localStorage.getItem("user"));
+  
+//   useEffect(() => {
+//     const getEnrolledCourses = async () => {
+//       try {
+//         const response = await api.get("/enrollments");
+//         const data = response.data;
+//         setEnrolledCourses(data.data || []);
+
+//         if (!data.success) {
+//           throw new Error(data.message || "Failed to fetch user profile");
+//         }
+//       } catch (err) {
+//         console.error("Error fetching user profile:", err);
+//       }
+//     };
+//     getEnrolledCourses();
+//   }, []);
+  
+//   useEffect(() => {
+//     if (userdetails) {
+//       setUser(userdetails);
+//       setFormData({
+//         name: userdetails?.name,
+//         email: userdetails?.email,
+//         bio: userdetails?.bio || "",
+//         avatar: userdetails?.avatar || "",
+//         phoneNumber: userdetails?.phoneNumber || "",
+//         gender: userdetails?.gender || "",
+//         role: userdetails?.role || "student",
+//         createdAt: userdetails?.createdAt || new Date(),
+//       });
+//     } else {
+//       window.location.href = "/login";
+//     }
+//   }, []);
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleAvatarChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       setFormData((prev) => ({
+//         ...prev,
+//         avatar: file,
+//       }));
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setIsLoading(true);
+//     setError(null);
+
+//     try {
+//       const formDataToSend = new FormData();
+//       formDataToSend.append("name", formData.name);
+//       formDataToSend.append("email", formData.email);
+//       formDataToSend.append("bio", formData.bio);
+//       formDataToSend.append("phoneNumber", formData.phoneNumber);
+//       formDataToSend.append("gender", formData.gender);
+//       if (formData.avatar) {
+//         formDataToSend.append("avatar", formData.avatar);
+//       }
+//       const response = await api.put("/auth/updateprofile", formDataToSend);
+//       const data = response.data;
+
+//       if (!data.success) {
+//         throw new Error(data.message || "Failed to update profile");
+//       }
+//       // Update local storage with new user data
+//       const updatedUser = { ...userdetails, ...data.data };
+//       localStorage.setItem("user", JSON.stringify(updatedUser));
+//       setUser(updatedUser);
+//       setEditMode(false);
+//       toast.success("Profile updated successfully!");
+//     } catch (err) {
+//       setError(err.message);
+//       toast.error(`Error updating profile: ${err.message}`);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   if (!user) {
+//     return (
+//       <div className="profile-loading">
+//         <div className="loading-spinner"></div>
+//         <p>Loading your profile...</p>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <>
+//       <Toaster position="top-right" />
+//       <div className="modern-profile-container">
+//         <div className="profile-header-card">
+//           <div className="avatar-container">
+//             <div className="avatar-wrapper">
+//               <Image
+//                 src={user?.avatar || "/default-avatar.png"}
+//                 alt="Profile"
+//                 width={120}
+//                 height={120}
+//                 className="profile-avatar"
+//                 priority
+//               />
+//               {/* {!editMode && (
+//                 <button 
+//                   className="edit-avatar-btn"
+//                   onClick={() => document.getElementById('avatar-input').click()}
+//                 >
+//                   <FaUserEdit />
+//                 </button>
+//               )} */}
+//             </div>
+//             <h1>{user?.name}</h1>
+//             <p className="user-role">{user?.role}</p>
+//           </div>
+          
+//           <div className="header-actions">
+//             {!editMode ? (
+//               <button className="action-btn primary" onClick={() => setEditMode(true)}>
+//                 <FaUserEdit /> Edit Profile
+//               </button>
+//             ) : null}
+//             <button
+//               className="action-btn secondary"
+//               onClick={() => {
+//                 localStorage.removeItem("user");
+//                 localStorage.removeItem("token");
+//                 window.location.href = "/login";
+//               }}
+//             >
+//               <FaSignOutAlt /> Log Out
+//             </button>
+//           </div>
+//         </div>
+
+//         <div className="profile-tabs">
+//           <button 
+//             className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
+//             onClick={() => setActiveTab('profile')}
+//           >
+//             Profile
+//           </button>
+//           <button 
+//             className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
+//             onClick={() => setActiveTab('courses')}
+//           >
+//             My Courses
+//           </button>
+//         </div>
+
+//         <div className="profile-content">
+//           {activeTab === 'profile' ? (
+//             editMode ? (
+//               <form onSubmit={handleSubmit} className="profile-form">
+//                 {error && <div className="error-message">{error}</div>}
+
+//                 <div className="form-grid">
+//                   <div className="form-group avatar-group">
+//                     <label htmlFor="avatar" className="avatar-label">
+//                       <div className="avatar-preview">
+//                         {formData.avatar ? (
+//                           <img
+//                             src={
+//                               typeof formData.avatar === "string"
+//                                 ? formData.avatar
+//                                 : URL.createObjectURL(formData.avatar)
+//                             }
+//                             alt="Profile"
+//                             className="editable-avatar"
+//                           />
+//                         ) : (
+//                           <div className="avatar-placeholder">
+//                             <FaUser size={40} />
+//                           </div>
+//                         )}
+//                         <div className="avatar-overlay">
+//                           <span>Change Photo</span>
+//                         </div>
+//                       </div>
+//                     </label>
+//                     <input
+//                       type="file"
+//                       id="avatar-input"
+//                       name="avatar"
+//                       accept="image/*"
+//                       onChange={handleAvatarChange}
+//                       className="avatar-input"
+//                     />
+//                   </div>
+
+//                   <div className="form-group">
+//                     <label htmlFor="name">
+//                       <FaUser /> Full Name
+//                     </label>
+//                     <input
+//                       type="text"
+//                       id="name"
+//                       name="name"
+//                       value={formData.name}
+//                       onChange={handleChange}
+//                       required
+//                     />
+//                   </div>
+
+//                   <div className="form-group">
+//                     <label htmlFor="email">
+//                       <FaEnvelope /> Email Address
+//                     </label>
+//                     <input
+//                       type="email"
+//                       id="email"
+//                       name="email"
+//                       value={formData.email}
+//                       onChange={handleChange}
+//                       required
+//                     />
+//                   </div>
+
+//                   <div className="form-group">
+//                     <label htmlFor="phoneNumber">
+//                       <FaPhone /> Phone Number
+//                     </label>
+//                     <input
+//                       type="tel"
+//                       id="phoneNumber"
+//                       name="phoneNumber"
+//                       value={formData.phoneNumber}
+//                       onChange={handleChange}
+//                       placeholder="+1 (555) 123-4567"
+//                     />
+//                   </div>
+
+//                   <div className="form-group">
+//                     <label htmlFor="gender">
+//                       <FaVenusMars /> Gender
+//                     </label>
+//                     <select
+//                       id="gender"
+//                       name="gender"
+//                       value={formData.gender}
+//                       onChange={handleChange}
+//                     >
+//                       <option value="">Select Gender</option>
+//                       <option value="Male">Male</option>
+//                       <option value="Female">Female</option>
+//                       <option value="Other">Other</option>
+//                       <option value="Prefer not to say">Prefer not to say</option>
+//                     </select>
+//                   </div>
+
+//                   <div className="form-group full-width">
+//                     <label htmlFor="bio">About Me</label>
+//                     <textarea
+//                       id="bio"
+//                       name="bio"
+//                       value={formData.bio}
+//                       onChange={handleChange}
+//                       maxLength="500"
+//                       rows="4"
+//                       placeholder="Tell us about yourself, your interests, and your goals..."
+//                     />
+//                     <div className="character-count">
+//                       {formData.bio.length}/500 characters
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <div className="form-actions">
+//                   <button
+//                     type="button"
+//                     className="cancel-btn"
+//                     onClick={() => setEditMode(false)}
+//                     disabled={isLoading}
+//                   >
+//                     <FaTimes /> Cancel
+//                   </button>
+//                   <button type="submit" className="save-btn" disabled={isLoading}>
+//                     {isLoading ? (
+//                       "Saving..."
+//                     ) : (
+//                       <>
+//                         <FaSave /> Save Changes
+//                       </>
+//                     )}
+//                   </button>
+//                 </div>
+//               </form>
+//             ) : (
+//               <div className="profile-view">
+//                 <div className="profile-details-grid">
+//                   <div className="detail-item">
+//                     <FaUser className="detail-icon" />
+//                     <div>
+//                       <span className="detail-label">Full Name</span>
+//                       <span className="detail-value">{user?.name}</span>
+//                     </div>
+//                   </div>
+                  
+//                   <div className="detail-item">
+//                     <FaEnvelope className="detail-icon" />
+//                     <div>
+//                       <span className="detail-label">Email</span>
+//                       <span className="detail-value">{user?.email}</span>
+//                     </div>
+//                   </div>
+                  
+//                   {user?.phoneNumber && (
+//                     <div className="detail-item">
+//                       <FaPhone className="detail-icon" />
+//                       <div>
+//                         <span className="detail-label">Phone</span>
+//                         <span className="detail-value">{user?.phoneNumber}</span>
+//                       </div>
+//                     </div>
+//                   )}
+                  
+//                   {user?.gender && (
+//                     <div className="detail-item">
+//                       <FaVenusMars className="detail-icon" />
+//                       <div>
+//                         <span className="detail-label">Gender</span>
+//                         <span className="detail-value">{user?.gender}</span>
+//                       </div>
+//                     </div>
+//                   )}
+                  
+//                   <div className="detail-item">
+//                     <FaCalendarAlt className="detail-icon" />
+//                     <div>
+//                       <span className="detail-label">Member Since</span>
+//                       <span className="detail-value">
+//                         {new Date(user?.createdAt).toLocaleDateString("en-IN", {
+//                           year: "numeric",
+//                           month: "long",
+//                           day: "numeric",
+//                         })}
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {user?.bio && (
+//                   <div className="profile-bio-section">
+//                     <h3>About Me</h3>
+//                     <p className="bio-content">{user?.bio}</p>
+//                   </div>
+//                 )}
+//               </div>
+//             )
+//           ) : (
+//             <div className="courses-section">
+//               <h2 className="section-title">My Learning Journey</h2>
+              
+//               {enrolledCourses.length === 0 ? (
+//                 <div className="no-courses-card">
+//                   <div className="empty-state">
+//                     <Image 
+//                       src="/empty-courses.svg" 
+//                       alt="No courses" 
+//                       width={200} 
+//                       height={200}
+//                     />
+//                     <h3>You haven't enrolled in any courses yet</h3>
+//                     <p>Start your learning journey by exploring our courses</p>
+//                     <a href="/courses" className="primary-btn">
+//                       Browse Courses
+//                     </a>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <div className="courses-grid">
+//                   {enrolledCourses.map((enrollment) => (
+//                     <CourseProgressCard
+//                       key={enrollment._id}
+//                       enrollment={enrollment}
+//                     />
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default UserProfile;
+
+
+"use client"
+import { useState, useEffect } from "react"
+import "@/app/styles/bootstrap.css"
+import "@/app/styles/main.css"
+import "@/app/styles/responsive.css"
+import "@/app/styles/font-awesome.css"
+// import "./styles/user-profile-enhanced.css" // Import the new enhanced CSS
+import Image from "next/image"
 import {
   FaUserEdit,
   FaTimes,
@@ -418,22 +863,19 @@ import {
   FaEnvelope,
   FaPhone,
   FaVenusMars,
-  FaUserTag,
   FaCalendarAlt,
-} from "react-icons/fa";
-import api from "@/utils/axios";
-import toast, { Toaster } from "react-hot-toast";
-import CourseProgressCard from "./enrollment";
-import { Link } from "lucide-react";
+} from "react-icons/fa"
+import api from "@/utils/axios"
+import toast, { Toaster } from "react-hot-toast"
+import CourseProgressCard from "./enrollment"
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [activeTab, setActiveTab] = useState("profile");
-
+  const [user, setUser] = useState(null)
+  const [editMode, setEditMode] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [enrolledCourses, setEnrolledCourses] = useState([])
+  const [activeTab, setActiveTab] = useState("profile")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -443,30 +885,28 @@ const UserProfile = () => {
     gender: "",
     role: "student",
     createdAt: new Date(),
-  });
+  })
+  const userdetails = JSON.parse(localStorage.getItem("user"))
 
-  const userdetails = JSON.parse(localStorage.getItem("user"));
-  
   useEffect(() => {
     const getEnrolledCourses = async () => {
       try {
-        const response = await api.get("/enrollments");
-        const data = response.data;
-        setEnrolledCourses(data.data || []);
-
+        const response = await api.get("/enrollments")
+        const data = response.data
+        setEnrolledCourses(data.data || [])
         if (!data.success) {
-          throw new Error(data.message || "Failed to fetch user profile");
+          throw new Error(data.message || "Failed to fetch user profile")
         }
       } catch (err) {
-        console.error("Error fetching user profile:", err);
+        console.error("Error fetching user profile:", err)
       }
-    };
-    getEnrolledCourses();
-  }, []);
-  
+    }
+    getEnrolledCourses()
+  }, [])
+
   useEffect(() => {
     if (userdetails) {
-      setUser(userdetails);
+      setUser(userdetails)
       setFormData({
         name: userdetails?.name,
         email: userdetails?.email,
@@ -476,114 +916,107 @@ const UserProfile = () => {
         gender: userdetails?.gender || "",
         role: userdetails?.role || "student",
         createdAt: userdetails?.createdAt || new Date(),
-      });
+      })
     } else {
-      window.location.href = "/login";
+      window.location.href = "/login"
     }
-  }, []);
+  }, [])
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
       setFormData((prev) => ({
         ...prev,
         avatar: file,
-      }));
+      }))
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("bio", formData.bio);
-      formDataToSend.append("phoneNumber", formData.phoneNumber);
-      formDataToSend.append("gender", formData.gender);
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", formData.name)
+      formDataToSend.append("email", formData.email)
+      formDataToSend.append("bio", formData.bio)
+      formDataToSend.append("phoneNumber", formData.phoneNumber)
+      formDataToSend.append("gender", formData.gender)
       if (formData.avatar) {
-        formDataToSend.append("avatar", formData.avatar);
+        formDataToSend.append("avatar", formData.avatar)
       }
-      const response = await api.put("/auth/updateprofile", formDataToSend);
-      const data = response.data;
-
+      const response = await api.put("/auth/updateprofile", formDataToSend)
+      const data = response.data
       if (!data.success) {
-        throw new Error(data.message || "Failed to update profile");
+        throw new Error(data.message || "Failed to update profile")
       }
       // Update local storage with new user data
-      const updatedUser = { ...userdetails, ...data.data };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      setEditMode(false);
-      toast.success("Profile updated successfully!");
+      const updatedUser = { ...userdetails, ...data.data }
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      setUser(updatedUser)
+      setEditMode(false)
+      toast.success("Profile updated successfully!")
     } catch (err) {
-      setError(err.message);
-      toast.error(`Error updating profile: ${err.message}`);
+      setError(err.message)
+      toast.error(`Error updating profile: ${err.message}`)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  if (!user) {
+  if (isLoading || !user) {
+    // Check isLoading here too for initial fetch
     return (
-      <div className="profile-loading">
-        <div className="loading-spinner"></div>
+      <div className="user-profile-enhanced-profile-loading">
+        <div className="user-profile-enhanced-loading-spinner"></div>
         <p>Loading your profile...</p>
       </div>
-    );
+    )
   }
 
   return (
     <>
       <Toaster position="top-right" />
-      <div className="modern-profile-container">
-        <div className="profile-header-card">
-          <div className="avatar-container">
-            <div className="avatar-wrapper">
+      <br />
+      <div className="user-profile-enhanced-container">
+        <br />
+        <div className="user-profile-enhanced-header-card">
+          <div className="user-profile-enhanced-avatar-container">
+            <div className="user-profile-enhanced-avatar-wrapper">
               <Image
-                src={user?.avatar || "/default-avatar.png"}
+                src={user?.avatar || "/placeholder.svg?height=120&width=120&text=Profile"}
                 alt="Profile"
                 width={120}
                 height={120}
-                className="profile-avatar"
+                className="user-profile-enhanced-profile-avatar"
                 priority
               />
-              {/* {!editMode && (
-                <button 
-                  className="edit-avatar-btn"
-                  onClick={() => document.getElementById('avatar-input').click()}
-                >
-                  <FaUserEdit />
-                </button>
-              )} */}
             </div>
             <h1>{user?.name}</h1>
-            <p className="user-role">{user?.role}</p>
+            <p className="user-profile-enhanced-user-role">{user?.role}</p>
           </div>
-          
-          <div className="header-actions">
+
+          <div className="user-profile-enhanced-header-actions">
             {!editMode ? (
-              <button className="action-btn primary" onClick={() => setEditMode(true)}>
+              <button className="user-profile-enhanced-action-btn primary" onClick={() => setEditMode(true)}>
                 <FaUserEdit /> Edit Profile
               </button>
             ) : null}
             <button
-              className="action-btn secondary"
+              className="user-profile-enhanced-action-btn secondary"
               onClick={() => {
-                localStorage.removeItem("user");
-                localStorage.removeItem("token");
-                window.location.href = "/login";
+                localStorage.removeItem("user")
+                localStorage.removeItem("token")
+                window.location.href = "/login"
               }}
             >
               <FaSignOutAlt /> Log Out
@@ -591,31 +1024,30 @@ const UserProfile = () => {
           </div>
         </div>
 
-        <div className="profile-tabs">
-          <button 
-            className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
+        <div className="user-profile-enhanced-profile-tabs">
+          <button
+            className={`user-profile-enhanced-tab-btn ${activeTab === "profile" ? "active" : ""}`}
+            onClick={() => setActiveTab("profile")}
           >
             Profile
           </button>
-          <button 
-            className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
-            onClick={() => setActiveTab('courses')}
+          <button
+            className={`user-profile-enhanced-tab-btn ${activeTab === "courses" ? "active" : ""}`}
+            onClick={() => setActiveTab("courses")}
           >
             My Courses
           </button>
         </div>
 
-        <div className="profile-content">
-          {activeTab === 'profile' ? (
+        <div className="user-profile-enhanced-profile-content">
+          {activeTab === "profile" ? (
             editMode ? (
-              <form onSubmit={handleSubmit} className="profile-form">
-                {error && <div className="error-message">{error}</div>}
-
-                <div className="form-grid">
-                  <div className="form-group avatar-group">
-                    <label htmlFor="avatar" className="avatar-label">
-                      <div className="avatar-preview">
+              <form onSubmit={handleSubmit} className="user-profile-enhanced-profile-form">
+                {error && <div className="user-profile-enhanced-error-message">{error}</div>}
+                <div className="user-profile-enhanced-form-grid">
+                  <div className="user-profile-enhanced-form-group user-profile-enhanced-avatar-group">
+                    <label htmlFor="avatar" className="user-profile-enhanced-avatar-label">
+                      <div className="user-profile-enhanced-avatar-preview">
                         {formData.avatar ? (
                           <img
                             src={
@@ -624,14 +1056,14 @@ const UserProfile = () => {
                                 : URL.createObjectURL(formData.avatar)
                             }
                             alt="Profile"
-                            className="editable-avatar"
+                            className="user-profile-enhanced-editable-avatar"
                           />
                         ) : (
-                          <div className="avatar-placeholder">
+                          <div className="user-profile-enhanced-avatar-placeholder">
                             <FaUser size={40} />
                           </div>
                         )}
-                        <div className="avatar-overlay">
+                        <div className="user-profile-enhanced-avatar-overlay">
                           <span>Change Photo</span>
                         </div>
                       </div>
@@ -642,25 +1074,16 @@ const UserProfile = () => {
                       name="avatar"
                       accept="image/*"
                       onChange={handleAvatarChange}
-                      className="avatar-input"
+                      className="user-profile-enhanced-avatar-input"
                     />
                   </div>
-
-                  <div className="form-group">
+                  <div className="user-profile-enhanced-form-group">
                     <label htmlFor="name">
                       <FaUser /> Full Name
                     </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
+                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
                   </div>
-
-                  <div className="form-group">
+                  <div className="user-profile-enhanced-form-group">
                     <label htmlFor="email">
                       <FaEnvelope /> Email Address
                     </label>
@@ -673,8 +1096,7 @@ const UserProfile = () => {
                       required
                     />
                   </div>
-
-                  <div className="form-group">
+                  <div className="user-profile-enhanced-form-group">
                     <label htmlFor="phoneNumber">
                       <FaPhone /> Phone Number
                     </label>
@@ -687,17 +1109,11 @@ const UserProfile = () => {
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
-
-                  <div className="form-group">
+                  <div className="user-profile-enhanced-form-group">
                     <label htmlFor="gender">
                       <FaVenusMars /> Gender
                     </label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleChange}
-                    >
+                    <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -705,8 +1121,7 @@ const UserProfile = () => {
                       <option value="Prefer not to say">Prefer not to say</option>
                     </select>
                   </div>
-
-                  <div className="form-group full-width">
+                  <div className="user-profile-enhanced-form-group full-width">
                     <label htmlFor="bio">About Me</label>
                     <textarea
                       id="bio"
@@ -717,22 +1132,19 @@ const UserProfile = () => {
                       rows="4"
                       placeholder="Tell us about yourself, your interests, and your goals..."
                     />
-                    <div className="character-count">
-                      {formData.bio.length}/500 characters
-                    </div>
+                    <div className="user-profile-enhanced-character-count">{formData.bio.length}/500 characters</div>
                   </div>
                 </div>
-
-                <div className="form-actions">
+                <div className="user-profile-enhanced-form-actions">
                   <button
                     type="button"
-                    className="cancel-btn"
+                    className="user-profile-enhanced-cancel-btn"
                     onClick={() => setEditMode(false)}
                     disabled={isLoading}
                   >
                     <FaTimes /> Cancel
                   </button>
-                  <button type="submit" className="save-btn" disabled={isLoading}>
+                  <button type="submit" className="user-profile-enhanced-save-btn" disabled={isLoading}>
                     {isLoading ? (
                       "Saving..."
                     ) : (
@@ -744,49 +1156,45 @@ const UserProfile = () => {
                 </div>
               </form>
             ) : (
-              <div className="profile-view">
-                <div className="profile-details-grid">
-                  <div className="detail-item">
-                    <FaUser className="detail-icon" />
+              <div className="user-profile-enhanced-profile-view">
+                <div className="user-profile-enhanced-profile-details-grid">
+                  <div className="user-profile-enhanced-detail-item">
+                    <FaUser className="user-profile-enhanced-detail-icon" />
                     <div>
-                      <span className="detail-label">Full Name</span>
-                      <span className="detail-value">{user?.name}</span>
+                      <span className="user-profile-enhanced-detail-label">Full Name</span>
+                      <span className="user-profile-enhanced-detail-value">{user?.name}</span>
                     </div>
                   </div>
-                  
-                  <div className="detail-item">
-                    <FaEnvelope className="detail-icon" />
+                  <div className="user-profile-enhanced-detail-item">
+                    <FaEnvelope className="user-profile-enhanced-detail-icon" />
                     <div>
-                      <span className="detail-label">Email</span>
-                      <span className="detail-value">{user?.email}</span>
+                      <span className="user-profile-enhanced-detail-label">Email</span>
+                      <span className="user-profile-enhanced-detail-value">{user?.email}</span>
                     </div>
                   </div>
-                  
                   {user?.phoneNumber && (
-                    <div className="detail-item">
-                      <FaPhone className="detail-icon" />
+                    <div className="user-profile-enhanced-detail-item">
+                      <FaPhone className="user-profile-enhanced-detail-icon" />
                       <div>
-                        <span className="detail-label">Phone</span>
-                        <span className="detail-value">{user?.phoneNumber}</span>
+                        <span className="user-profile-enhanced-detail-label">Phone</span>
+                        <span className="user-profile-enhanced-detail-value">{user?.phoneNumber}</span>
                       </div>
                     </div>
                   )}
-                  
                   {user?.gender && (
-                    <div className="detail-item">
-                      <FaVenusMars className="detail-icon" />
+                    <div className="user-profile-enhanced-detail-item">
+                      <FaVenusMars className="user-profile-enhanced-detail-icon" />
                       <div>
-                        <span className="detail-label">Gender</span>
-                        <span className="detail-value">{user?.gender}</span>
+                        <span className="user-profile-enhanced-detail-label">Gender</span>
+                        <span className="user-profile-enhanced-detail-value">{user?.gender}</span>
                       </div>
                     </div>
                   )}
-                  
-                  <div className="detail-item">
-                    <FaCalendarAlt className="detail-icon" />
+                  <div className="user-profile-enhanced-detail-item">
+                    <FaCalendarAlt className="user-profile-enhanced-detail-icon" />
                     <div>
-                      <span className="detail-label">Member Since</span>
-                      <span className="detail-value">
+                      <span className="user-profile-enhanced-detail-label">Member Since</span>
+                      <span className="user-profile-enhanced-detail-value">
                         {new Date(user?.createdAt).toLocaleDateString("en-IN", {
                           year: "numeric",
                           month: "long",
@@ -796,42 +1204,37 @@ const UserProfile = () => {
                     </div>
                   </div>
                 </div>
-
                 {user?.bio && (
-                  <div className="profile-bio-section">
+                  <div className="user-profile-enhanced-profile-bio-section">
                     <h3>About Me</h3>
-                    <p className="bio-content">{user?.bio}</p>
+                    <p className="user-profile-enhanced-bio-content">{user?.bio}</p>
                   </div>
                 )}
               </div>
             )
           ) : (
-            <div className="courses-section">
-              <h2 className="section-title">My Learning Journey</h2>
-              
+            <div className="user-profile-enhanced-courses-section">
+              <h2 className="user-profile-enhanced-section-title">My Learning Journey</h2>
               {enrolledCourses.length === 0 ? (
-                <div className="no-courses-card">
-                  <div className="empty-state">
-                    <Image 
-                      src="/empty-courses.svg" 
-                      alt="No courses" 
-                      width={200} 
+                <div className="user-profile-enhanced-no-courses-card">
+                  <div className="user-profile-enhanced-empty-state">
+                    <Image
+                      src="/placeholder.svg?height=200&width=200&text=No+Courses"
+                      alt="No courses"
+                      width={200}
                       height={200}
                     />
                     <h3>You haven't enrolled in any courses yet</h3>
                     <p>Start your learning journey by exploring our courses</p>
-                    <a href="/courses" className="primary-btn">
+                    <a href="/courses" className="user-profile-enhanced-primary-btn">
                       Browse Courses
                     </a>
                   </div>
                 </div>
               ) : (
-                <div className="courses-grid">
+                <div className="user-profile-enhanced-courses-grid">
                   {enrolledCourses.map((enrollment) => (
-                    <CourseProgressCard
-                      key={enrollment._id}
-                      enrollment={enrollment}
-                    />
+                    <CourseProgressCard key={enrollment._id} enrollment={enrollment} />
                   ))}
                 </div>
               )}
@@ -840,7 +1243,7 @@ const UserProfile = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default UserProfile;
+export default UserProfile

@@ -1,445 +1,892 @@
 
-// import Image from "next/image"
-// import Link from "next/link"
-// import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Badge } from "@/components/ui/badge"
-// import {
-//   Calendar,
-//   User,
-//   Tag,
-//   ArrowLeft,
-//   Share2,
-//   Facebook,
-//   Twitter,
-//   Linkedin,
-//   TrendingUp,
-//   Clock,
-//   Folder,
-// } from "lucide-react"
-// import axios from "axios"
-// import { useState } from "react"
 
+// "use client";
 
-// export async function generateStaticParams() {
-//   const res = await axios.get("https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=2&status=2", {
-//     headers: {
-//       Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
-//     }
-//   })
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useState, useEffect, use } from "react";
+// import axios from "axios";
+// import { Calendar, ArrowLeft, Clock, TrendingUp, Folder, Share2, BookOpen, User, MessageSquare } from "lucide-react";
 
-//   return res.data.data.map((post: any) => ({
-//     slug: post.slug,
-//   }))
-// }
+// export default function BlogPostPage({ params }) {
+//   const { slug } = use(params);
 
+//   const [allPosts, setAllPosts] = useState([]);
+//   const [post, setPost] = useState(null);
+//   const [trendingPosts, setTrendingPosts] = useState([]);
+//   const [recentPosts, setRecentPosts] = useState([]);
+//   const [categories, setCategories] = useState({});
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [readingTime, setReadingTime] = useState(0);
+//   const [comments, setComments] = useState([]);
+//   const [newComment, setNewComment] = useState("");
+//   const [activeTab, setActiveTab] = useState("trending");
 
-// export const fetchCategoryById = async (categoryId) => {
-//   if (!categoryId) return null;
-
-//   try {
-//     const res = await axios.get(
-//       `https://cms.sevenunique.com/apis/category/get_category_by_id.php?category_id=${categoryId}`,
-//       {
-//         headers: {
-//           Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
+//   // Simulated comments data
+//   useEffect(() => {
+//     if (post) {
+//       setComments([
+//         {
+//           id: 1,
+//           name: "Alex Johnson",
+//           avatar: "/avatar1.svg",
+//           date: "2 days ago",
+//           comment: "This article provided valuable insights. I particularly appreciated the section about modern UI design patterns."
 //         },
-//       }
-//     );
-//     return res.data?.data;
-//   } catch (err) {
-//     console.error("Failed to fetch category:", err);
-//     return null;
-//   }
-// };
-
-// export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-//   const res = await axios.get(
-//     `https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=2&status=2`,
-//     {
-//       headers: {
-//         Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
-//       },
+//         {
+//           id: 2,
+//           name: "Sarah Williams",
+//           avatar: "/avatar2.svg",
+//           date: "1 day ago",
+//           comment: "The examples were very practical. I implemented some of these techniques in my current project with great success!"
+//         }
+//       ]);
 //     }
-//   );
+//   }, [post]);
 
-//   const rawPosts = res.data?.data || [];
+//   useEffect(() => {
+//     async function fetchData() {
+//       try {
+//         setIsLoading(true);
+//         const res = await axios.get(
+//           "https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=9&status=2",
+//           {
+//             headers: {
+//               Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
+//             },
+//           }
+//         );
 
-//   const categoryIds = [...new Set(rawPosts.map((post: any) => post.category_id))];
+//         const rawPosts = res.data?.data || [];
+//         const categoryIds = [
+//           ...new Set(rawPosts.map((post) => post.category_id)),
+//         ];
 
-//   const categoryMap = {};
-//   await Promise.all(
-//     categoryIds.map(async (id) => {
-//       const category = await fetchCategoryById(id);
-//       if (category) categoryMap[id] = category.name;
-//     })
-//   );
+//         const categoryMap = {};
+//         await Promise.all(
+//           categoryIds.map(async (id) => {
+//             const categoryRes = await axios.get(
+//               `https://cms.sevenunique.com/apis/category/get_category_by_id.php?category_id=${id}`,
+//               {
+//                 headers: {
+//                   Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
+//                 },
+//               }
+//             );
+//             categoryMap[id] =
+//               categoryRes.data?.data?.name || "Uncategorized";
+//           })
+//         );
 
-//   const allPosts = rawPosts.map((post: any) => ({
-//     ...post,
-//     categoryName: categoryMap[post.category_id] || "Uncategorized",
-//   }));
+//         const postsWithCategories = rawPosts.map((post) => ({
+//           ...post,
+//           categoryName: categoryMap[post.category_id] || "Uncategorized",
+//         }));
 
+//         const currentPost = postsWithCategories.find((p) => p.slug === slug);
+        
+//         // Calculate reading time
+//         if (currentPost?.content) {
+//           const wordsPerMinute = 200;
+//           const textLength = currentPost.content.split(/\s+/).length;
+//           setReadingTime(Math.ceil(textLength / wordsPerMinute));
+//         }
+        
+//         setPost(currentPost);
+//         setAllPosts(postsWithCategories);
 
-//   const trendingPosts = allPosts.filter((post: any) => post?.is_trending == 1);
+//         const trending = postsWithCategories.filter((p) => p.is_trending == 1);
+//         setTrendingPosts(trending.slice(0, 5));
 
+//         const recent = [...postsWithCategories]
+//           .sort((a, b) => new Date(b.date) - new Date(a.date))
+//           .slice(0, 5);
+//         setRecentPosts(recent);
 
-//   const recentPosts = allPosts
-//     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-//     .slice(0, 5);
+//         const categoryCount = postsWithCategories.reduce((acc, post) => {
+//           const name = post.categoryName;
+//           acc[name] = (acc[name] || 0) + 1;
+//           return acc;
+//         }, {});
+//         setCategories(categoryCount);
+//       } catch (error) {
+//         console.error("Error fetching data:", error);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     }
 
-//   const post = allPosts.find((p: any) => p.slug === params.slug);
+//     fetchData();
+//   }, [slug]);
 
-//   if (!post) {
+//   const handleCommentSubmit = (e) => {
+//     e.preventDefault();
+//     if (newComment.trim() === "") return;
+    
+//     const newCommentObj = {
+//       id: comments.length + 1,
+//       name: "You",
+//       avatar: "/avatar-you.svg",
+//       date: "Just now",
+//       comment: newComment
+//     };
+    
+//     setComments([newCommentObj, ...comments]);
+//     setNewComment("");
+//   };
+
+//   if (isLoading) {
 //     return (
-//       <div className="p-10 text-center">
-//         <h1 className="text-3xl font-bold mb-4">Blog Not Found</h1>
-//         <p>This blog post does not exist or may have been removed.</p>
+//       <div style={{
+//         display: 'flex',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         minHeight: '100vh',
+//         background: 'linear-gradient(135deg, #f5f7ff 0%, #e6eeff 100%)',
+//         fontFamily: "'Inter', 'Segoe UI', sans-serif"
+//       }}>
+//         <div style={{ textAlign: 'center' }}>
+//           <div style={{
+//             width: '60px',
+//             height: '60px',
+//             margin: '0 auto 20px',
+//             borderRadius: '50%',
+//             background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
+//             animation: 'pulse 1.5s infinite'
+//           }}></div>
+//           <p style={{
+//             fontSize: '1.2rem',
+//             fontWeight: '600',
+//             color: '#334155'
+//           }}>Loading article...</p>
+//         </div>
 //       </div>
 //     );
 //   }
-//   const categories = allPosts.reduce((acc, post) => {
-//     const name = post.categoryName || "Uncategorized";
-//     acc[name] = (acc[name] || 0) + 1;
-//     return acc;
-//   }, {} as Record<string, number>);
+
+//   if (!post) {
+//     return (
+//       <div style={{
+//         display: 'flex',
+//         flexDirection: 'column',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         minHeight: '100vh',
+//         background: 'linear-gradient(135deg, #f5f7ff 0%, #e6eeff 100%)',
+//         padding: '20px',
+//         fontFamily: "'Inter', 'Segoe UI', sans-serif"
+//       }}>
+//         <div style={{
+//           background: 'white',
+//           padding: '40px',
+//           borderRadius: '20px',
+//           boxShadow: '0 15px 50px rgba(112, 102, 255, 0.15)',
+//           maxWidth: '500px',
+//           width: '100%',
+//           textAlign: 'center'
+//         }}>
+//           <h1 style={{
+//             fontSize: '2rem',
+//             fontWeight: '800',
+//             color: '#1e293b',
+//             marginBottom: '20px'
+//           }}>Article Not Found</h1>
+//           <p style={{
+//             color: '#64748b',
+//             marginBottom: '30px',
+//             lineHeight: '1.6'
+//           }}>
+//             The blog post you're looking for doesn't exist or may have been removed.
+//           </p>
+//           <Link href="/blog" style={{
+//             display: 'inline-flex',
+//             alignItems: 'center',
+//             gap: '8px',
+//             padding: '12px 28px',
+//             background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
+//             color: 'white',
+//             borderRadius: '12px',
+//             fontWeight: '600',
+//             textDecoration: 'none',
+//             transition: 'all 0.3s ease',
+//             boxShadow: '0 5px 15px rgba(112, 102, 255, 0.3)'
+//           }}>
+//             <ArrowLeft size={18} />
+//             Back to Blog
+//           </Link>
+//         </div>
+//       </div>
+//     );
+//   }
 
 //   return (
-
-//     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
-//       {/* Hero */}
-//       <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-//         <Image src={post?.image || "/placeholder.svg"} alt={post?.title || 'logo'} fill className="object-cover" priority />
-//         <div className="absolute inset-0 bg-black/50" />
-//         <div className="absolute inset-0 flex items-center">
-//           <div className="container mx-auto px-4">
-//             <div className="max-w-3xl mx-auto text-center text-white">
-//               <h1 className="text-4xl font-bold mb-4">{post?.title}</h1>
-//               <div className="flex flex-wrap justify-center gap-4 text-sm">
-//                 <div className="flex items-center">
-//                   <Calendar className="h-4 w-4 mr-1" />
-//                   {new Date(post?.created_at).toLocaleDateString()}
-//                 </div>
-//                 <div className="flex items-center">
-//                   <User className="h-4 w-4 mr-1" />
-//                   Admin
-//                 </div>
-//                 <div className="flex items-center">
-//                   <Tag className="h-4 w-4 mr-1" />
-//                   {post?.categoryName}
-//                 </div>
-//               </div>
+//     <div style={{
+//       fontFamily: "'Inter', 'Segoe UI', sans-serif",
+//       background: '#f8faff',
+//       color: '#334155',
+//       minHeight: '100vh'
+//     }}>
+//       {/* Hero Section */}
+//       <div style={{
+//         position: 'relative',
+//         height: '500px',
+//         background: `linear-gradient(rgba(79, 70, 229, 0.85), rgba(124, 58, 237, 0.85)), url('${post.image || "/placeholder.svg"}')`,
+//         backgroundSize: 'cover',
+//         backgroundPosition: 'center',
+//         display: 'flex',
+//         alignItems: 'flex-end',
+//         paddingBottom: '80px'
+//       }}>
+//         <div style={{
+//           maxWidth: '1200px',
+//           width: '100%',
+//           margin: '0 auto',
+//           padding: '0 20px',
+//           position: 'relative',
+//           zIndex: '2',
+//           color: 'white'
+//         }}>
+//           <div style={{
+//             display: 'inline-flex',
+//             alignItems: 'center',
+//             gap: '8px',
+//             background: 'rgba(255, 255, 255, 0.15)',
+//             backdropFilter: 'blur(10px)',
+//             padding: '8px 16px',
+//             borderRadius: '50px',
+//             fontSize: '0.9rem',
+//             fontWeight: '500',
+//             marginBottom: '20px'
+//           }}>
+//             <Folder size={16} style={{ color: '#e0e7ff' }} />
+//             <span>{post.categoryName}</span>
+//           </div>
+          
+//           <h1 style={{
+//             fontSize: '3rem',
+//             fontWeight: '800',
+//             lineHeight: '1.2',
+//             maxWidth: '800px',
+//             marginBottom: '25px',
+//             textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
+//           }}>{post.title}</h1>
+          
+//           <div style={{
+//             display: 'flex',
+//             alignItems: 'center',
+//             gap: '25px',
+//             flexWrap: 'wrap'
+//           }}>
+//             <div style={{
+//               display: 'flex',
+//               alignItems: 'center',
+//               gap: '8px',
+//               fontSize: '1rem'
+//             }}>
+//               <User size={18} style={{ color: '#e0e7ff' }} />
+//               <span>John Doe</span>
+//             </div>
+            
+//             <div style={{
+//               display: 'flex',
+//               alignItems: 'center',
+//               gap: '8px',
+//               fontSize: '1rem'
+//             }}>
+//               <Calendar size={18} style={{ color: '#e0e7ff' }} />
+//               <span>{new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+//             </div>
+            
+//             <div style={{
+//               display: 'flex',
+//               alignItems: 'center',
+//               gap: '8px',
+//               fontSize: '1rem'
+//             }}>
+//               <Clock size={18} style={{ color: '#e0e7ff' }} />
+//               <span>{readingTime} min read</span>
 //             </div>
 //           </div>
 //         </div>
 //       </div>
 
-//       {/* Content */}
-//       <div className="container mx-auto px-4 py-12 ">
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//           {/* Main Content */}
-//           <div className="lg:col-span-2 bg-white p-5 shadow-sm rounded-lg" style={{ height: "max-content" }}>
-//             <Link
-//               href="/blog"
-//               className="inline-flex items-center text-[#ab6545] dark:text-[#e8ab8f] mb-8 hover:underline"
-//             >
-//               <ArrowLeft className="h-4 w-4 mr-2" />
-//               Back to Blog
-//             </Link>
-
-//             <article className="prose prose-lg dark:prose-invert max-w-none mb-12">
-//               <div dangerouslySetInnerHTML={{ __html: post?.content }} />
-//             </article>
-
-//             {/* Tags */}
-//             {/* <div className="flex flex-wrap gap-2 mb-12">
-//               {post?.tags?.map((tag) => (
-//                 <Link
-//                   key={tag}
-//                   href={`/blog?tag=${encodeURIComponent(tag)}`}
-//                   className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
-//                 >
-//                   #{tag}
-//                 </Link>
-//               ))}
-//             </div> */}
-
-//             {/* Share */}
-//             <div className="border-t border-b py-6">
-//               <div className="flex justify-between items-center flex-wrap gap-4">
-//                 <div className="font-medium">Share this article</div>
-//                 <div className="flex gap-2">
-//                   <Button variant="outline" size="icon" className="rounded-full">
-//                     <Facebook className="h-4 w-4" />
-//                     <span className="sr-only">Facebook</span>
-//                   </Button>
-//                   <Button variant="outline" size="icon" className="rounded-full">
-//                     <Twitter className="h-4 w-4" />
-//                     <span className="sr-only">Twitter</span>
-//                   </Button>
-//                   <Button variant="outline" size="icon" className="rounded-full">
-//                     <Linkedin className="h-4 w-4" />
-//                     <span className="sr-only">LinkedIn</span>
-//                   </Button>
-//                   <Button variant="outline" size="icon" className="rounded-full">
-//                     <Share2 className="h-4 w-4" />
-//                     <span className="sr-only">Copy Link</span>
-//                   </Button>
+//       <div style={{
+//         maxWidth: '1200px',
+//         margin: '0 auto',
+//         padding: '40px 20px'
+//       }}>
+//         <div style={{
+//           display: 'grid',
+//           gridTemplateColumns: '1fr 350px',
+//           gap: '40px'
+//         }}>
+//           <div style={{ position: 'relative' }}>
+//             <div style={{
+//               background: 'white',
+//               borderRadius: '20px',
+//               boxShadow: '0 15px 50px rgba(112, 102, 255, 0.1)',
+//               padding: '40px',
+//               marginTop: '-80px'
+//             }}>
+//               <Link href="/blog" style={{
+//                 display: 'inline-flex',
+//                 alignItems: 'center',
+//                 gap: '8px',
+//                 color: '#4f46e5',
+//                 fontWeight: '600',
+//                 marginBottom: '25px',
+//                 textDecoration: 'none',
+//                 transition: 'all 0.3s ease'
+//               }}>
+//                 <ArrowLeft size={20} />
+//                 Back to Blog
+//               </Link>
+              
+              
+              
+//               {/* Article Content */}
+//               <div
+//                 style={{
+//                   fontSize: '1.1rem',
+//                   color: '#334155',
+//                   lineHeight: '1.8'
+//                 }}
+//                 dangerouslySetInnerHTML={{ __html: post.content }}
+//               />
+              
+//               {/* Tags */}
+//               <div style={{
+//                 display: 'flex',
+//                 flexWrap: 'wrap',
+//                 gap: '10px',
+//                 margin: '40px 0',
+//                 paddingTop: '30px',
+//                 borderTop: '1px solid #e2e8f0'
+//               }}>
+//                 <span style={{
+//                   background: '#f0f4ff',
+//                   color: '#4f46e5',
+//                   padding: '6px 15px',
+//                   borderRadius: '50px',
+//                   fontSize: '0.9rem',
+//                   fontWeight: '500'
+//                 }}>Web Design</span>
+//                 <span style={{
+//                   background: '#f0f4ff',
+//                   color: '#4f46e5',
+//                   padding: '6px 15px',
+//                   borderRadius: '50px',
+//                   fontSize: '0.9rem',
+//                   fontWeight: '500'
+//                 }}>UI/UX</span>
+//                 <span style={{
+//                   background: '#f0f4ff',
+//                   color: '#4f46e5',
+//                   padding: '6px 15px',
+//                   borderRadius: '50px',
+//                   fontSize: '0.9rem',
+//                   fontWeight: '500'
+//                 }}>Development</span>
+//               </div>
+              
+//               {/* Share Buttons */}
+//               <div style={{
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 gap: '15px',
+//                 padding: '20px 0',
+//                 borderTop: '1px solid #e2e8f0',
+//                 borderBottom: '1px solid #e2e8f0',
+//                 marginBottom: '40px'
+//               }}>
+//                 <span style={{
+//                   fontWeight: '600',
+//                   color: '#1e293b'
+//                 }}>Share this article:</span>
+//                 <div style={{ display: 'flex', gap: '10px' }}>
+//                   <button style={{
+//                     width: '40px',
+//                     height: '40px',
+//                     borderRadius: '50%',
+//                     background: '#e0f2fe',
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                     border: 'none',
+//                     cursor: 'pointer',
+//                     transition: 'all 0.3s ease'
+//                   }}>
+//                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#0ea5e9">
+//                       <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.195 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+//                     </svg>
+//                   </button>
+//                   <button style={{
+//                     width: '40px',
+//                     height: '40px',
+//                     borderRadius: '50%',
+//                     background: '#dbeafe',
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                     border: 'none',
+//                     cursor: 'pointer',
+//                     transition: 'all 0.3s ease'
+//                   }}>
+//                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#2563eb">
+//                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+//                     </svg>
+//                   </button>
+//                   <button style={{
+//                     width: '40px',
+//                     height: '40px',
+//                     borderRadius: '50%',
+//                     background: '#dbeafe',
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                     border: 'none',
+//                     cursor: 'pointer',
+//                     transition: 'all 0.3s ease'
+//                   }}>
+//                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#0284c7">
+//                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+//                     </svg>
+//                   </button>
 //                 </div>
 //               </div>
-//             </div>
-
-//             {/* Author Bio */}
-//             {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-12">
-//               <div className="flex items-center gap-4">
-//                 <Image
-//                   src={post.authorImage || "/placeholder.svg"}
-//                   alt={post.author || 'logo'}
-//                   width={64}
-//                   height={64}
-//                   className="rounded-full"
-//                 />
-//                 <div>
-//                   <h3 className="text-xl font-bold">{post.author}</h3>
-//                   <p className="text-gray-600 dark:text-gray-400">{post.authorBio}</p>
-//                 </div>
-//               </div>
-//             </div> */}
-
-//             {/* Related Posts */}
-//             <div>
-//               <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                 {
-//                   allPosts?.filter((p) => p.slug !== post.slug && p.category_id === post.category_id).slice(0, 2)
-//                     .map((relatedPost) => (
-//                       <div
-//                         key={relatedPost.slug}
-//                         className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow"
-//                       >
-//                         <div className="h-48 relative">
-//                           <Image
-//                             src={relatedPost.image || "/placeholder.svg"}
-//                             alt={relatedPost.title}
-//                             fill
-//                             className="object-cover transition-transform duration-500 group-hover:scale-110"
-//                           />
-//                         </div>
-//                         <div className="p-4">
-//                           <Badge variant="secondary" className="mb-2">
-//                             {relatedPost?.categoryName}
-//                           </Badge>
-//                           <h3 className="font-bold mb-2 line-clamp-2">{relatedPost.title}</h3>
-//                           <p className="text-gray-600 dark:text-gray-400 text-sm mb-2 flex items-center">
-//                             <Calendar className="h-3 w-3 mr-1" />
-//                             {new Date(relatedPost?.created_at).toLocaleDateString()}
-//                           </p>
-//                           <Link
-//                             href={`/blog/${relatedPost.slug}`}
-//                             className="text-[#ab6545] dark:text-[#e8ab8f] text-sm hover:underline"
-//                           >
-//                             Read more
-//                           </Link>
-//                         </div>
-//                       </div>
-//                     ))
-//                 }
-//                 {allPosts?.filter((p) => p.slug !== post.slug && p.category_id === post.category_id).length === 0 && (
-//                   <div className="text-center col-span-1 md:col-span-2 text-gray-500 dark:text-gray-400">
-//                     No related articles found.
-//                   </div>
-//                 )}
-//               </div>
+              
+          
 //             </div>
 //           </div>
 
 //           {/* Sidebar */}
-//           <div className="lg:col-span-1 space-y-8">
-//             {/* Trending Posts */}
-//             <Card className="shadow-sm border-0">
-//               <CardHeader>
-//                 <CardTitle className="flex items-center gap-2">
-//                   <TrendingUp className="h-5 w-5 text-orange-500" />
-//                   Trending Posts
-//                 </CardTitle>
-//               </CardHeader>
-//               <CardContent className="space-y-4">
-//                 {trendingPosts?.length > 0 ?
-//                   trendingPosts.slice(0, 5).map((trendingPost, index) => (
-//                     <div key={trendingPost.slug} className="flex gap-3">
-//                       <div className="flex-shrink-0 w-16 h-16 relative rounded-lg overflow-hidden">
-//                         <Image
-//                           src={trendingPost.image || "/placeholder.svg"}
-//                           alt={trendingPost.title}
-//                           fill
-//                           className="object-cover"
-//                         />
-//                       </div>
-//                       <div className="flex-1 min-w-0">
-//                         <div className="flex items-center gap-2 mb-1">
-//                           <span className="text-xs font-bold text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-2 py-1 rounded">
-//                             #{index + 1}
-//                           </span>
-//                           <Badge variant="outline" className="text-xs">
-//                             {trendingPost?.categoryName}
-//                           </Badge>
+//           <div style={{
+//             display: 'flex',
+//             flexDirection: 'column',
+//             gap: '30px'
+//           }}>
+//             <div style={{
+//               background: 'white',
+//               borderRadius: '20px',
+//               boxShadow: '0 15px 50px rgba(112, 102, 255, 0.1)',
+//               padding: '25px'
+//             }}>
+//               <div style={{
+//                 display: 'flex',
+//                 borderBottom: '1px solid #e2e8f0',
+//                 marginBottom: '20px'
+//               }}>
+//                 <button 
+//                   onClick={() => setActiveTab("trending")}
+//                   style={{
+//                     padding: '10px 15px',
+//                     background: activeTab === "trending" ? '#f0f4ff' : 'transparent',
+//                     color: activeTab === "trending" ? '#4f46e5' : '#64748b',
+//                     fontWeight: '600',
+//                     border: 'none',
+//                     cursor: 'pointer',
+//                     borderRadius: '8px 8px 0 0',
+//                     flex: '1',
+//                     textAlign: 'center',
+//                     transition: 'all 0.3s ease'
+//                   }}
+//                 >
+//                   <TrendingUp size={18} style={{ marginRight: '8px' }} />
+//                   Trending
+//                 </button>
+//                 <button 
+//                   onClick={() => setActiveTab("recent")}
+//                   style={{
+//                     padding: '10px 15px',
+//                     background: activeTab === "recent" ? '#f0f4ff' : 'transparent',
+//                     color: activeTab === "recent" ? '#4f46e5' : '#64748b',
+//                     fontWeight: '600',
+//                     border: 'none',
+//                     cursor: 'pointer',
+//                     borderRadius: '8px 8px 0 0',
+//                     flex: '1',
+//                     textAlign: 'center',
+//                     transition: 'all 0.3s ease'
+//                   }}
+//                 >
+//                   <Clock size={18} style={{ marginRight: '8px' }} />
+//                   Recent
+//                 </button>
+//               </div>
+              
+//               {activeTab === "trending" ? (
+//                 <div style={{ display: 'grid', gap: '15px' }}>
+//                   {trendingPosts.map((p, i) => (
+//                     <Link
+//                       key={p.slug}
+//                       href={`/blog/${p.slug}`}
+//                       style={{
+//                         display: 'flex',
+//                         gap: '15px',
+//                         alignItems: 'center',
+//                         padding: '15px',
+//                         borderRadius: '12px',
+//                         background: '#f8fafc',
+//                         textDecoration: 'none',
+//                         transition: 'all 0.3s ease'
+//                       }}
+//                     >
+//                       <div style={{
+//                         minWidth: '60px',
+//                         height: '60px',
+//                         borderRadius: '10px',
+//                         background: `url(${p.image || "/placeholder.svg"}) center/cover no-repeat`
+//                       }}></div>
+//                       <div>
+//                         <div style={{
+//                           display: 'flex',
+//                           alignItems: 'center',
+//                           gap: '6px',
+//                           marginBottom: '5px'
+//                         }}>
+//                           <div style={{
+//                             width: '20px',
+//                             height: '20px',
+//                             borderRadius: '50%',
+//                             background: '#e0e7ff',
+//                             color: '#4f46e5',
+//                             display: 'flex',
+//                             alignItems: 'center',
+//                             justifyContent: 'center',
+//                             fontSize: '0.75rem',
+//                             fontWeight: '700'
+//                           }}>{i + 1}</div>
+//                           <span style={{
+//                             fontSize: '0.85rem',
+//                             color: '#4f46e5',
+//                             fontWeight: '500'
+//                           }}>Trending</span>
 //                         </div>
-//                         <Link
-//                           href={`/blog/${trendingPost.slug}`}
-//                           className="text-sm font-medium line-clamp-2 hover:text-[#ab6545] dark:hover:text-[#e8ab8f] transition-colors"
-//                         >
-//                           {trendingPost?.title.split(" ").slice(0, 5).join(" ")}...
-//                         </Link>
-//                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
-//                           <Calendar className="h-3 w-3 mr-1" />
-//                           {new Date(trendingPost?.created_at).toLocaleDateString()}
-//                         </p>
-//                         {/* <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-//                           {trendingPost?.views?.toLocaleString()} views
-//                         </p> */}
+//                         <h4 style={{
+//                           fontWeight: '600',
+//                           color: '#1e293b',
+//                           marginBottom: '5px',
+//                           fontSize: '1rem'
+//                         }}>{p.title.split(" ").slice(0, 6).join(" ")}...</h4>
+//                         <div style={{
+//                           display: 'flex',
+//                           alignItems: 'center',
+//                           gap: '8px',
+//                           fontSize: '0.85rem',
+//                           color: '#64748b'
+//                         }}>
+//                           <Calendar size={14} />
+//                           <span>{new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+//                         </div>
 //                       </div>
-//                     </div>
-//                   )) :
-//                   <div className="text-center text-gray-500">Trending blog not found</div>
-//                 }
-//               </CardContent>
-//             </Card>
-
-//             {/* Recent Posts */}
-//             <Card className="shadow-sm border-0">
-//               <CardHeader>
-//                 <CardTitle className="flex items-center gap-2">
-//                   <Clock className="h-5 w-5 text-blue-500" />
-//                   Recent Posts
-//                 </CardTitle>
-//               </CardHeader>
-//               <CardContent className="space-y-4">
-//                 {recentPosts.slice(0, 5).map((recentPost) => (
-//                   <div key={recentPost.slug} className="flex gap-3">
-//                     <div className="flex-shrink-0 w-16 h-16 relative rounded-lg overflow-hidden">
-//                       <Image
-//                         src={recentPost.image || "/placeholder.svg"}
-//                         alt={recentPost.title}
-//                         fill
-//                         className="object-cover"
-//                       />
-//                     </div>
-//                     <div className="flex-1 min-w-0">
-//                       <Badge variant="outline" className="text-xs mb-1">
-//                         {recentPost?.categoryName}
-//                       </Badge>
-//                       <Link
-//                         href={`/blog/${recentPost?.slug}`}
-//                         className="text-sm font-medium line-clamp-2 hover:text-[#ab6545] dark:hover:text-[#e8ab8f] transition-colors block"
-//                       >
-//                         {recentPost?.title.split(" ").slice(0, 5).join(" ")}...
-//                       </Link>
-//                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
-//                         <Calendar className="h-3 w-3 mr-1" />
-//                         {new Date(recentPost?.created_at).toLocaleDateString()}
-//                       </p>
-//                     </div>
-//                   </div>
+//                     </Link>
+//                   ))}
+//                 </div>
+//               ) : (
+//                 <div style={{ display: 'grid', gap: '15px' }}>
+//                   {recentPosts.map((p) => (
+//                     <Link
+//                       key={p.slug}
+//                       href={`/blog/${p.slug}`}
+//                       style={{
+//                         display: 'flex',
+//                         gap: '15px',
+//                         alignItems: 'center',
+//                         padding: '15px',
+//                         borderRadius: '12px',
+//                         background: '#f8fafc',
+//                         textDecoration: 'none',
+//                         transition: 'all 0.3s ease'
+//                       }}
+//                     >
+//                       <div style={{
+//                         minWidth: '60px',
+//                         height: '60px',
+//                         borderRadius: '10px',
+//                         background: `url(${p.image || "/placeholder.svg"}) center/cover no-repeat`
+//                       }}></div>
+//                       <div>
+//                         <h4 style={{
+//                           fontWeight: '600',
+//                           color: '#1e293b',
+//                           marginBottom: '8px',
+//                           fontSize: '1rem'
+//                         }}>{p.title.split(" ").slice(0, 6).join(" ")}...</h4>
+//                         <div style={{
+//                           display: 'flex',
+//                           alignItems: 'center',
+//                           gap: '8px',
+//                           fontSize: '0.85rem',
+//                           color: '#64748b'
+//                         }}>
+//                           <Calendar size={14} />
+//                           <span>{new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+//                         </div>
+//                       </div>
+//                     </Link>
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+            
+//             <div style={{
+//               background: 'white',
+//               borderRadius: '20px',
+//               boxShadow: '0 15px 50px rgba(112, 102, 255, 0.1)',
+//               padding: '25px'
+//             }}>
+//               <div style={{
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 gap: '10px',
+//                 marginBottom: '20px'
+//               }}>
+//                 <Folder size={20} color="#4f46e5" />
+//                 <h3 style={{
+//                   fontSize: '1.25rem',
+//                   fontWeight: '700',
+//                   color: '#1e293b'
+//                 }}>Categories</h3>
+//               </div>
+              
+//               <div style={{
+//                 display: 'grid',
+//                 gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+//                 gap: '12px'
+//               }}>
+//                 {Object.entries(categories).map(([name, count]) => (
+//                   <Link
+//                     key={name}
+//                     href="/"
+//                     style={{
+//                       display: 'block',
+//                       background: '#f0f4ff',
+//                       padding: '12px 15px',
+//                       borderRadius: '10px',
+//                       fontSize: '0.95rem',
+//                       fontWeight: '500',
+//                       color: '#4f46e5',
+//                       textDecoration: 'none',
+//                       position: 'relative',
+//                       transition: 'all 0.3s ease'
+//                     }}
+//                   >
+//                     {name}
+//                     <span style={{
+//                       position: 'absolute',
+//                       top: '-8px',
+//                       right: '-8px',
+//                       background: '#4f46e5',
+//                       color: 'white',
+//                       width: '24px',
+//                       height: '24px',
+//                       borderRadius: '50%',
+//                       display: 'flex',
+//                       alignItems: 'center',
+//                       justifyContent: 'center',
+//                       fontSize: '0.75rem'
+//                     }}>{count}</span>
+//                   </Link>
 //                 ))}
-//               </CardContent>
-//             </Card>
-
-//             {/* Categories */}
-//             <Card className="shadow-sm border-0">
-//               <CardHeader>
-//                 <CardTitle className="flex items-center gap-2">
-//                   <Folder className="h-5 w-5 text-green-500" />
-//                   Categories
-//                 </CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <div className="space-y-2">
-//                   {Object.entries(categories)
-//                     .sort(([, a], [, b]) => b - a)
-//                     .map(([category, count]) => (
-//                       <Link
-//                         key={category}
-//                         href={`/blog`}
-//                         className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
-//                       >
-//                         <span className="text-sm font-medium group-hover:text-[#ab6545] dark:group-hover:text-[#e8ab8f] transition-colors">
-//                           {category}
-//                         </span>
-//                         <Badge variant="secondary" className="text-xs">
-//                           {count}
-//                         </Badge>
-//                       </Link>
-//                     ))}
-//                 </div>
-//               </CardContent>
-
-//             </Card>
-
-//             {/* Newsletter Signup */}
-//             {/* <Card className="bg-gradient-to-br from-[#ab6545] to-[#8b5a3c] text-white">
-//               <CardHeader>
-//                 <CardTitle className="text-white">Stay Updated</CardTitle>
-//               </CardHeader>
-//               <CardContent>
-//                 <p className="text-sm text-white/90 mb-4">
-//                   Subscribe to our newsletter and never miss our latest articles and insights.
-//                 </p>
-//                 <div className="space-y-3">
-//                   <input
-//                     type="email"
-//                     placeholder="Enter your email"
-//                     className="w-full px-3 py-2 rounded-lg text-gray-900 text-sm"
-//                   />
-//                   <Button className="w-full bg-white text-[#ab6545] hover:bg-gray-100">Subscribe</Button>
-//                 </div>
-//               </CardContent>
-//             </Card> */}
+//               </div>
+//             </div>
+            
+         
 //           </div>
 //         </div>
 //       </div>
+
+//       {/* Global styles for blog content */}
+//       <style jsx global>{`
+//         .blog-detail-page .blog-content p {
+//           margin-bottom: 1.8em;
+//           font-size: 1.1rem;
+//           line-height: 1.8;
+//           color: #334155;
+//         }
+        
+//         .blog-detail-page .blog-content h2 {
+//           font-size: 1.8rem;
+//           font-weight: 700;
+//           margin-top: 2.5em;
+//           margin-bottom: 1em;
+//           color: #1e293b;
+//           padding-bottom: 0.5em;
+//           border-bottom: 1px solid #e2e8f0;
+//         }
+        
+//         .blog-detail-page .blog-content h3 {
+//           font-size: 1.5rem;
+//           font-weight: 600;
+//           margin-top: 2em;
+//           margin-bottom: 1em;
+//           color: #1e293b;
+//         }
+        
+//         .blog-detail-page .blog-content a {
+//           color: #4f46e5;
+//           text-decoration: none;
+//           font-weight: 500;
+//           border-bottom: 1px solid #c7d2fe;
+//           transition: all 0.2s ease;
+//         }
+        
+//         .blog-detail-page .blog-content a:hover {
+//           color: #7c3aed;
+//           border-bottom-color: #a5b4fc;
+//         }
+        
+//         .blog-detail-page .blog-content ul,
+//         .blog-detail-page .blog-content ol {
+//           margin-left: 1.5em;
+//           margin-bottom: 1.8em;
+//         }
+        
+//         .blog-detail-page .blog-content li {
+//           margin-bottom: 0.8em;
+//           position: relative;
+//         }
+        
+//         .blog-detail-page .blog-content ul li::before {
+//           content: "•";
+//           color: #4f46e5;
+//           font-weight: bold;
+//           display: inline-block;
+//           width: 1em;
+//           margin-left: -1em;
+//         }
+        
+//         .blog-detail-page .blog-content blockquote {
+//           border-left: 4px solid #4f46e5;
+//           background: #f0f4ff;
+//           padding: 1.5rem;
+//           margin: 2rem 0;
+//           border-radius: 0 0.5rem 0.5rem 0;
+//           font-style: italic;
+//           color: #475569;
+//         }
+        
+//         @keyframes pulse {
+//           0% { opacity: 0.7; }
+//           50% { opacity: 0.4; }
+//           100% { opacity: 0.7; }
+//         }
+        
+//         @media (max-width: 900px) {
+//           .content-area {
+//             grid-template-columns: 1fr !important;
+//           }
+          
+//           .hero-section {
+//             height: 400px !important;
+//             padding-bottom: 40px !important;
+//           }
+          
+//           .hero-title {
+//             font-size: 2.2rem !important;
+//           }
+          
+//           .article-container {
+//             margin-top: -40px !important;
+//             padding: 30px !important;
+//           }
+//         }
+        
+//         @media (max-width: 600px) {
+//           .hero-title {
+//             font-size: 1.8rem !important;
+//           }
+          
+//           .blog-content h2 {
+//             font-size: 1.5rem !important;
+//           }
+          
+//           .blog-content h3 {
+//             font-size: 1.3rem !important;
+//           }
+          
+//           .hero-meta {
+//             flex-direction: column;
+//             gap: 10px !important;
+//             align-items: flex-start;
+//           }
+//         }
+//       `}</style>
 //     </div>
-//   )
+//   );
 // }
 
 
 
 
-
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useEffect, use } from "react";
-import axios from "axios";
-import { Calendar, ArrowLeft } from "lucide-react";
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import { useState, useEffect, use } from "react"
+import axios from "axios"
+import {
+  Calendar,
+  ArrowLeft,
+  Clock,
+  TrendingUp,
+  Folder,
+  Share2,
+  BookOpen,
+  User,
+  Eye,
+  Heart,
+  Bookmark,
+} from "lucide-react"
 
 export default function BlogPostPage({ params }) {
-  const { slug } = use(params);
+  const { slug } = use(params)
+  const [allPosts, setAllPosts] = useState([])
+  const [post, setPost] = useState(null)
+  const [trendingPosts, setTrendingPosts] = useState([])
+  const [recentPosts, setRecentPosts] = useState([])
+  const [categories, setCategories] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [readingTime, setReadingTime] = useState(0)
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState("")
+  const [activeTab, setActiveTab] = useState("trending")
 
-  const [allPosts, setAllPosts] = useState([]);
-  const [post, setPost] = useState(null);
-  const [trendingPosts, setTrendingPosts] = useState([]);
-  const [recentPosts, setRecentPosts] = useState([]);
-  const [categories, setCategories] = useState({});
+  // Simulated comments data
+  useEffect(() => {
+    if (post) {
+      setComments([
+        {
+          id: 1,
+          name: "Alex Johnson",
+          avatar: "/placeholder.svg?height=40&width=40&text=AJ",
+          date: "2 days ago",
+          comment:
+            "This article provided valuable insights. I particularly appreciated the section about modern UI design patterns.",
+        },
+        {
+          id: 2,
+          name: "Sarah Williams",
+          avatar: "/placeholder.svg?height=40&width=40&text=SW",
+          date: "1 day ago",
+          comment:
+            "The examples were very practical. I implemented some of these techniques in my current project with great success!",
+        },
+      ])
+    }
+  }, [post])
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get(
-          "https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=9&status=2",
-          {
-            headers: {
-              Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
-            },
-          }
-        );
-
-        const rawPosts = res.data?.data || [];
-        const categoryIds = [
-          ...new Set(rawPosts.map((post) => post.category_id)),
-        ];
-
-        const categoryMap = {};
+        setIsLoading(true)
+        const res = await axios.get("https://cms.sevenunique.com/apis/blogs/get-blogs.php?website_id=9&status=2", {
+          headers: {
+            Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
+          },
+        })
+        const rawPosts = res.data?.data || []
+        const categoryIds = [...new Set(rawPosts.map((post) => post.category_id))]
+        const categoryMap = {}
         await Promise.all(
           categoryIds.map(async (id) => {
             const categoryRes = await axios.get(
@@ -448,309 +895,371 @@ export default function BlogPostPage({ params }) {
                 headers: {
                   Authorization: "Bearer jibhfiugh84t3324fefei#*fef",
                 },
-              }
-            );
-            categoryMap[id] =
-              categoryRes.data?.data?.name || "Uncategorized";
-          })
-        );
-
+              },
+            )
+            categoryMap[id] = categoryRes.data?.data?.name || "Uncategorized"
+          }),
+        )
         const postsWithCategories = rawPosts.map((post) => ({
           ...post,
           categoryName: categoryMap[post.category_id] || "Uncategorized",
-        }));
+        }))
+        const currentPost = postsWithCategories.find((p) => p.slug === slug)
 
-        const currentPost = postsWithCategories.find((p) => p.slug === slug);
-        setPost(currentPost);
-        setAllPosts(postsWithCategories);
+        // Calculate reading time
+        if (currentPost?.content) {
+          const wordsPerMinute = 200
+          const textLength = currentPost.content.split(/\s+/).length
+          setReadingTime(Math.ceil(textLength / wordsPerMinute))
+        }
 
-        const trending = postsWithCategories.filter((p) => p.is_trending == 1);
-        setTrendingPosts(trending.slice(0, 5));
-
-        const recent = [...postsWithCategories]
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 5);
-        setRecentPosts(recent);
-
+        setPost(currentPost)
+        setAllPosts(postsWithCategories)
+        const trending = postsWithCategories.filter((p) => p.is_trending == 1)
+        setTrendingPosts(trending.slice(0, 5))
+        const recent = [...postsWithCategories].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
+        setRecentPosts(recent)
         const categoryCount = postsWithCategories.reduce((acc, post) => {
-          const name = post.categoryName;
-          acc[name] = (acc[name] || 0) + 1;
-          return acc;
-        }, {});
-        setCategories(categoryCount);
+          const name = post.categoryName
+          acc[name] = (acc[name] || 0) + 1
+          return acc
+        }, {})
+        setCategories(categoryCount)
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
+    fetchData()
+  }, [slug])
 
-    fetchData();
-  }, [slug]);
+  const handleCommentSubmit = (e) => {
+    e.preventDefault()
+    if (newComment.trim() === "") return
 
-  if (!post)
+    const newCommentObj = {
+      id: comments.length + 1,
+      name: "You",
+      avatar: "/placeholder.svg?height=40&width=40&text=You",
+      date: "Just now",
+      comment: newComment,
+    }
+
+    setComments([newCommentObj, ...comments])
+    setNewComment("")
+  }
+
+  if (isLoading) {
     return (
-      <div className="text-center py-20 bg-[#f8faff] min-h-screen">
-        Blog Not Found
+      <div className="blog-detail-enhanced-loading-container">
+        <div className="blog-detail-enhanced-loading-content">
+          <div className="blog-detail-enhanced-loading-spinner"></div>
+          <div className="blog-detail-enhanced-loading-text">
+            <h3>Loading article...</h3>
+            <p>Please wait while we fetch the content</p>
+          </div>
+        </div>
       </div>
-    );
+    )
+  }
+
+  if (!post) {
+    return (
+      <div className="blog-detail-enhanced-error-container">
+        <div className="blog-detail-enhanced-error-content">
+          <div className="blog-detail-enhanced-error-icon">📄</div>
+          <h1 className="blog-detail-enhanced-error-title">Article Not Found</h1>
+          <p className="blog-detail-enhanced-error-text">
+            The blog post you're looking for doesn't exist or may have been removed.
+          </p>
+          <Link href="/blog" className="blog-detail-enhanced-back-button">
+            <ArrowLeft size={18} />
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="contact-page">
-      <div
-        className="hero-section"
-        style={{
-          backgroundImage: `url(${post.image || "/placeholder.svg"})`,
-        }}
-      >
-        <div className="hero-overlay"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">{post.title}</h1>
-          <div className="hero-meta">
-            <Calendar size={16} />
-            <span>{new Date(post.created_at).toLocaleDateString()}</span>
-          </div>
+    <div className="blog-detail-enhanced-page">
+      {/* Hero Section */}
+      <div className="blog-detail-enhanced-hero">
+        <div className="blog-detail-enhanced-hero-background">
+          <Image
+            src={post.image || "/placeholder.svg?height=600&width=1200&text=Blog+Hero"}
+            alt={post.title}
+            fill
+            className="blog-detail-enhanced-hero-image"
+          />
+          <div className="blog-detail-enhanced-hero-overlay"></div>
         </div>
-      </div>
 
-      <div className="container">
-        <div className="content-area">
-          <div className="main-content">
-            <Link
-              href="/blog"
-              className="back-link inline-flex items-center gap-1 mb-6 text-[#ab6545] hover:text-[#8a4f32] transition-colors"
-            >
-              <ArrowLeft size={16} /> Back to Blog
+        <div className="blog-detail-enhanced-hero-content">
+          <div className="blog-detail-enhanced-breadcrumb">
+            <Link href="/blog" className="blog-detail-enhanced-breadcrumb-link">
+              Blog
             </Link>
-            <div
-              className="blog-content bg-white p-6 rounded-lg shadow-sm"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            <span className="blog-detail-enhanced-breadcrumb-separator">→</span>
+            <span className="blog-detail-enhanced-breadcrumb-current">{post.categoryName}</span>
           </div>
 
-          <aside className="sidebar">
-            <div className="sidebar-section bg-white p-5 rounded-lg shadow-sm">
-              <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-100">
-                Trending Posts
-              </h3>
-              <div className="space-y-3">
-                {trendingPosts.map((p, i) => (
-                  <Link
-                    key={p.slug}
-                    href={`/blog/${p.slug}`}
-                    className="sidebar-link block p-2 hover:bg-[#f8faff] rounded transition-colors"
-                  >
-                    <span className="font-medium text-[#ab6545] mr-2">
-                      #{i + 1}
-                    </span>
-                    {p.title.split(" ").slice(0, 5).join(" ")}...
-                  </Link>
-                ))}
-              </div>
-            </div>
+          <div className="blog-detail-enhanced-category-badge">
+            <Folder size={16} />
+            <span>{post.categoryName}</span>
+          </div>
 
-            <div className="sidebar-section bg-white p-5 rounded-lg shadow-sm">
-              <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-100">
-                Recent Posts
-              </h3>
-              <div className="space-y-3">
-                {recentPosts.map((p) => (
-                  <Link
-                    key={p.slug}
-                    href={`/blog/${p.slug}`}
-                    className="sidebar-link block p-2 hover:bg-[#f8faff] rounded transition-colors"
-                  >
-                    {p.title.split(" ").slice(0, 5).join(" ")}...
-                  </Link>
-                ))}
-              </div>
-            </div>
+          <h1 className="blog-detail-enhanced-hero-title">{post.title}</h1>
 
-            <div className="sidebar-section bg-white p-5 rounded-lg shadow-sm">
-              <h3 className="text-lg font-bold mb-4 pb-2 border-b border-gray-100">
-                Categories
-              </h3>
-              <div className="space-y-2">
-                {Object.entries(categories).map(([name, count]) => (
-                  <div
-                    key={name}
-                    className="category-item flex justify-between py-2 border-b border-gray-100 last:border-0"
-                  >
-                    <span className="text-gray-700">{name}</span>
-                    <span className="bg-[#f0f4ff] text-[#5a7cff] rounded-full px-2.5 py-0.5 text-sm">
-                      {count}
-                    </span>
-                  </div>
-                ))}
-              </div>
+          <div className="blog-detail-enhanced-hero-meta">
+            <div className="blog-detail-enhanced-meta-item">
+              <User size={18} />
+              <span>John Doe</span>
             </div>
-          </aside>
+            <div className="blog-detail-enhanced-meta-item">
+              <Calendar size={18} />
+              <span>
+                {new Date(post.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+            <div className="blog-detail-enhanced-meta-item">
+              <Clock size={18} />
+              <span>{readingTime} min read</span>
+            </div>
+            <div className="blog-detail-enhanced-meta-item">
+              <Eye size={18} />
+              <span>1.2k views</span>
+            </div>
+          </div>
+
+          <div className="blog-detail-enhanced-hero-actions">
+            <button className="blog-detail-enhanced-action-btn blog-detail-enhanced-like-btn">
+              <Heart size={18} />
+              <span>24</span>
+            </button>
+            <button className="blog-detail-enhanced-action-btn blog-detail-enhanced-bookmark-btn">
+              <Bookmark size={18} />
+            </button>
+            <button className="blog-detail-enhanced-action-btn blog-detail-enhanced-share-btn">
+              <Share2 size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <style jsx>{`
-        .contact-page {
-          font-family: "Inter", "Segoe UI", sans-serif;
-          background-color: #f8faff;
-          color: #333;
-          min-height: 100vh;
-        }
+      <div className="blog-detail-enhanced-container">
+        <div className="blog-detail-enhanced-layout">
+          {/* Main Content */}
+          <div className="blog-detail-enhanced-main">
+            <div className="blog-detail-enhanced-article">
+              <Link href="/blog" className="blog-detail-enhanced-back-link">
+                <ArrowLeft size={20} />
+                Back to Blog
+              </Link>
 
-        .hero-section {
-          position: relative;
-          height: 60vh;
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-        }
+              {/* Article Content */}
+              <div className="blog-detail-enhanced-content">
+                <div className="blog-detail-enhanced-article-body" dangerouslySetInnerHTML={{ __html: post.content }} />
+              </div>
 
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to bottom,
-            rgba(112, 102, 255, 0.2) 0%,
-            rgba(51, 75, 255, 0.7) 100%
-          );
-        }
+              {/* Tags */}
+              <div className="blog-detail-enhanced-tags-section">
+                <h4 className="blog-detail-enhanced-tags-title">Tags:</h4>
+                <div className="blog-detail-enhanced-tags">
+                  <span className="blog-detail-enhanced-tag">Web Design</span>
+                  <span className="blog-detail-enhanced-tag">UI/UX</span>
+                  <span className="blog-detail-enhanced-tag">Development</span>
+                </div>
+              </div>
 
-        .hero-content {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          text-align: center;
-          padding: 20px;
-          max-width: 800px;
-          margin: 0 auto;
-        }
+              {/* Share Section */}
+              <div className="blog-detail-enhanced-share-section">
+                <div className="blog-detail-enhanced-share-header">
+                  <h4>Share this article:</h4>
+                  <p>Help others discover this content</p>
+                </div>
+                <div className="blog-detail-enhanced-share-buttons">
+                  <button className="blog-detail-enhanced-share-button blog-detail-enhanced-twitter">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.054 10.054 0 01-3.127 1.195 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                    </svg>
+                    <span>Twitter</span>
+                  </button>
+                  <button className="blog-detail-enhanced-share-button blog-detail-enhanced-facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                    <span>Facebook</span>
+                  </button>
+                  <button className="blog-detail-enhanced-share-button blog-detail-enhanced-linkedin">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                    <span>LinkedIn</span>
+                  </button>
+                  <button className="blog-detail-enhanced-share-button blog-detail-enhanced-copy">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy Link</span>
+                  </button>
+                </div>
+              </div>
 
-        .hero-title {
-          font-size: 2.5rem;
-          font-weight: 800;
-          line-height: 1.2;
-          color: #fff;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
 
-        .hero-meta {
-          margin-top: 15px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 1rem;
-          background: rgba(0, 0, 0, 0.3);
-          padding: 6px 14px;
-          border-radius: 20px;
-        }
+            </div>
+          </div>
 
-        .container {
-          padding: 50px 20px;
-          max-width: 1200px;
-          margin: auto;
-        }
+          {/* Sidebar */}
+          <div className="blog-detail-enhanced-sidebar">
+            {/* Table of Contents */}
+            {/* <div className="blog-detail-enhanced-sidebar-card">
+              <div className="blog-detail-enhanced-card-header">
+                <BookOpen size={20} />
+                <h3>Table of Contents</h3>
+              </div>
+              <div className="blog-detail-enhanced-toc">
+                <a href="#introduction" className="blog-detail-enhanced-toc-item">
+                  Introduction
+                </a>
+                <a href="#getting-started" className="blog-detail-enhanced-toc-item">
+                  Getting Started
+                </a>
+                <a href="#best-practices" className="blog-detail-enhanced-toc-item">
+                  Best Practices
+                </a>
+                <a href="#conclusion" className="blog-detail-enhanced-toc-item">
+                  Conclusion
+                </a>
+              </div>
+            </div> */}
 
-        .content-area {
-          display: flex;
-          flex-direction: row;
-          gap: 30px;
-        }
+            {/* Trending/Recent Posts */}
+            <div className="blog-detail-enhanced-sidebar-card">
+              <div className="blog-detail-enhanced-tabs">
+                <button
+                  onClick={() => setActiveTab("trending")}
+                  className={`blog-detail-enhanced-tab ${
+                    activeTab === "trending" ? "blog-detail-enhanced-tab-active" : ""
+                  }`}
+                >
+                  <TrendingUp size={18} />
+                  Trending
+                </button>
+                <button
+                  onClick={() => setActiveTab("recent")}
+                  className={`blog-detail-enhanced-tab ${
+                    activeTab === "recent" ? "blog-detail-enhanced-tab-active" : ""
+                  }`}
+                >
+                  <Clock size={18} />
+                  Recent
+                </button>
+              </div>
 
-        .main-content {
-          flex: 2;
-        }
+              <div className="blog-detail-enhanced-posts-list">
+                {activeTab === "trending"
+                  ? trendingPosts.map((p, i) => (
+                      <Link key={p.slug} href={`/blog/${p.slug}`} className="blog-detail-enhanced-post-item">
+                        <div className="blog-detail-enhanced-post-image">
+                          <Image
+                            src={p.image || "/placeholder.svg?height=60&width=60&text=Post"}
+                            alt={p.title}
+                            width={60}
+                            height={60}
+                            className="blog-detail-enhanced-post-thumbnail"
+                          />
+                          <div className="blog-detail-enhanced-trending-badge">{i + 1}</div>
+                        </div>
+                        <div className="blog-detail-enhanced-post-info">
+                          <h4 className="blog-detail-enhanced-post-title">
+                            {p.title.split(" ").slice(0, 6).join(" ")}...
+                          </h4>
+                          <div className="blog-detail-enhanced-post-meta">
+                            <Calendar size={14} />
+                            <span>
+                              {new Date(p.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  : recentPosts.map((p) => (
+                      <Link key={p.slug} href={`/blog/${p.slug}`} className="blog-detail-enhanced-post-item">
+                        <div className="blog-detail-enhanced-post-image">
+                          <Image
+                            src={p.image || "/placeholder.svg?height=60&width=60&text=Post"}
+                            alt={p.title}
+                            width={60}
+                            height={60}
+                            className="blog-detail-enhanced-post-thumbnail"
+                          />
+                        </div>
+                        <div className="blog-detail-enhanced-post-info">
+                          <h4 className="blog-detail-enhanced-post-title">
+                            {p.title.split(" ").slice(0, 6).join(" ")}...
+                          </h4>
+                          <div className="blog-detail-enhanced-post-meta">
+                            <Calendar size={14} />
+                            <span>
+                              {new Date(p.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+              </div>
+            </div>
 
-        .blog-content {
-          margin-top: 10px;
-          line-height: 1.7;
-          font-size: 1.05rem;
-          padding: 20px;
-        }
+            {/* Categories */}
+            <div className="blog-detail-enhanced-sidebar-card">
+              <div className="blog-detail-enhanced-card-header">
+                <Folder size={20} />
+                <h3>Categories</h3>
+              </div>
+              <div className="blog-detail-enhanced-categories">
+                {Object.entries(categories).map(([name, count]) => (
+                  <Link key={name} href="/" className="blog-detail-enhanced-category-item">
+                    <span className="blog-detail-enhanced-category-name">{name}</span>
+                    <span className="blog-detail-enhanced-category-count">{count}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
 
-        .blog-content :global(p) {
-          margin-bottom: 1.2em;
-        }
-
-        .blog-content :global(h2) {
-          font-size: 1.8rem;
-          font-weight: 700;
-          margin-top: 1.8em;
-          margin-bottom: 0.8em;
-          color: #2d3748;
-        }
-
-        .blog-content :global(h3) {
-          font-size: 1.5rem;
-          font-weight: 600;
-          margin-top: 1.6em;
-          margin-bottom: 0.7em;
-          color: #2d3748;
-        }
-
-        .blog-content :global(a) {
-          color: #ab6545;
-          text-decoration: underline;
-        }
-
-        .blog-content :global(ul),
-        .blog-content :global(ol) {
-          margin-left: 1.5em;
-          margin-bottom: 1.5em;
-        }
-
-        .blog-content :global(li) {
-          margin-bottom: 0.5em;
-        }
-
-        .sidebar {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 30px;
-          max-width: 350px;
-        }
-
-        .sidebar-section {
-          transition: transform 0.2s ease;
-        }
-
-        .sidebar-section:hover {
-          transform: translateY(-3px);
-        }
-
-        @media (max-width: 768px) {
-          .content-area {
-            flex-direction: column;
-          }
-
-          .hero-title {
-            font-size: 1.8rem;
-          }
-
-          .hero-section {
-            height: 50vh;
-          }
-
-          .container {
-            padding: 30px 15px;
-          }
-
-          .sidebar {
-            max-width: 100%;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .hero-title {
-            font-size: 1.5rem;
-          }
-
-          .hero-meta {
-            font-size: 0.9rem;
-          }
-        }
-      `}</style>
+            {/* Newsletter Signup */}
+            {/* <div className="blog-detail-enhanced-sidebar-card blog-detail-enhanced-newsletter">
+              <div className="blog-detail-enhanced-newsletter-content">
+                <div className="blog-detail-enhanced-newsletter-icon">📧</div>
+                <h3>Stay Updated</h3>
+                <p>Get the latest articles and insights delivered to your inbox.</p>
+                <form className="blog-detail-enhanced-newsletter-form">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="blog-detail-enhanced-newsletter-input"
+                  />
+                  <button type="submit" className="blog-detail-enhanced-newsletter-button">
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+            </div> */}
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

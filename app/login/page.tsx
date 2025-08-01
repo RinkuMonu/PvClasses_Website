@@ -292,7 +292,7 @@ export default function LoginPage() {
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("user", JSON.stringify(res?.data?.user));
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/userProfile";
         }, 1000);
       }
     } catch (error: unknown) {
@@ -328,7 +328,7 @@ export default function LoginPage() {
         <div className="login-panel">
           <div className="panel-content">
             <div className="logo-placeholder">
-              <div className="logo-circle"></div>
+              {/* <div className="logo-circle"></div> */}
             </div>
             <h2>Welcome Back!</h2>
             <p>Sign in to access your personalized dashboard and continue your journey with us.</p>
@@ -452,6 +452,7 @@ export default function LoginPage() {
           background-color: #f8faff;
           min-height: 100vh;
           display: flex;
+          margin-top: 120px;
           flex-direction: column;
         }
         
@@ -462,7 +463,7 @@ export default function LoginPage() {
         
         .login-panel {
           flex: 1;
-          background: linear-gradient(135deg, #3b54f9ff 0%, #007bffff 100%);
+          background: linear-gradient(135deg, #233dffff 0%, #b6d9ffff 100%);
           color: white;
           display: flex;
           align-items: center;

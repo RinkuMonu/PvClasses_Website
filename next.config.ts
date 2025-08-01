@@ -43,7 +43,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "cms.sevenunique.com",
-        pathname: "uploads/blogs/**",
+        pathname: "//uploads/blogs/**",
       },
       {
         protocol: "http",
