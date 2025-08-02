@@ -276,7 +276,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* <ReadyToStart /> */}
+      <ReadyToStart />
       <ForgotPasswordModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </div>
   )

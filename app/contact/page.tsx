@@ -158,8 +158,8 @@ export default function ContactPage() {
             <div className="info-header">
               <h3>Get in Touch with PV Classes</h3>
               <p>
-                We're here to support your educational journey. Reach out to us through any of the channels below, and
-                let's discuss how we can help you achieve your learning goals.
+                We are here to support your educational journey. Reach out to us through any of the channels below, and
+                lets discuss how we can help you achieve your learning goals.
               </p>
             </div>
 

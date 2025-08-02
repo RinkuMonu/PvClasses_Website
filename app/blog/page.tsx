@@ -9,7 +9,7 @@ export default function BlogPage() {
   const [blogs, setBlogs] = useState([])
   const [allCategories, setAllCategories] = useState([])
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  // const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -263,7 +263,7 @@ export default function BlogPage() {
           {!hasMore && blogs.length > 0 && (
             <div className="blog-enhanced-end-message">
               <div className="blog-enhanced-end-icon">🎉</div>
-              <p>You've reached the end! Thanks for reading all our articles.</p>
+              <p>You have reached the end! Thanks for reading all our articles.</p>
             </div>
           )}
         </div>

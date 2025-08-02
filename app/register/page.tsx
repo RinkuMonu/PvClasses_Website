@@ -510,7 +510,7 @@ export default function RegisterPage() {
         </div>
       </section>
 
-      {/* <ReadyToStart /> */}
+      <ReadyToStart />
     </div>
   )
 }

@@ -1090,7 +1090,7 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
               <div className="course-detail-enhanced-section">
                 <h3 className="course-detail-enhanced-section-title">
                   <FaGraduationCap className="course-detail-enhanced-section-icon" />
-                  What you'll learn
+                  What you learn
                 </h3>
                 <ul className="course-detail-enhanced-outcomes-list">
                   {course?.learningOutcomes?.flatMap((item, index) =>
@@ -1521,7 +1521,7 @@ const CourseIntroSection = ({ courseId }: { courseId: string }) => {
                 <div className="course-detail-enhanced-no-lessons">
                   <FaBookOpen size={48} />
                   <h4>No lessons found</h4>
-                  <p>This course doesn't have any lessons yet.</p>
+                  <p>This course does not have any lessons yet.</p>
                 </div>
               )}
             </div>
