@@ -21,7 +21,7 @@ export default function CallToAction() {
               <span>Transform Your Career</span>
             </div>
 
-            <h1 className="hero-title">
+            <h1 className="hero-title" style={{color:"#000"}}>
               Learn Skills That Matter,
               <span className="title-highlight"> Advance Your Future</span>
             </h1>

@@ -1,100 +1,107 @@
 import Link from "next/link"
-import { LuChevronRight, LuBookOpen, LuUsers, LuAward, LuPlay } from "react-icons/lu"
+import { LuChevronRight, LuBookOpen, LuUsers, LuAward, LuPlay, LuStar } from "react-icons/lu"
+import "@/app/styles/ready-to-start-styles.css"
 
 function ReadyToStart() {
   return (
-    <section className="modern-cta-section">
-      <div className="cta-container">
-        {/* Main Content */}
-        <div className="cta-content">
-          <div className="">
-            <div className="section-badge">
-              <LuBookOpen className="badge-icon" />
-              <span>Start Your Journey</span>
+    <section className="edu-cta-wrapper">
+      <div className="cta-main-container">
+        {/* Main Content Section */}
+        <div className="cta-content-area">
+          <div className="content-inner-wrapper">
+            <div className="journey-badge">
+              <LuBookOpen className="journey-badge-icon" />
+              <span className="journey-badge-text">Start Your Journey</span>
             </div>
 
-            <h2 className="cta-title">Ready to get started?</h2>
+            <h2 className="cta-main-heading">Ready to get started?</h2>
 
-            <p className="cta-description">
+            <p className="cta-main-description">
               Join thousands of students who have transformed their careers with our expert-led courses. Start your
               learning journey today and unlock your potential with hands-on projects and industry-recognized
               certifications.
             </p>
 
-            <div className="buttons-container">
-              <Link href="/course" className="primary-cta-btn">
-                <span className="btn-text">Get Started</span>
-                <LuChevronRight className="btn-icon" />
+            <div className="action-buttons-wrapper">
+              <Link href="/course" className="primary-action-button">
+                <span className="button-label">Get Started</span>
+                <LuChevronRight className="button-arrow-icon" />
               </Link>
-              <Link href="/course" className="secondary-cta-btn">
-                <LuPlay className="play-icon" />
-                <span className="btn-text" >All Courses</span>
+              <Link href="/course" className="secondary-action-button">
+                <LuPlay className="button-play-icon" />
+                <span className="button-label">All Courses</span>
               </Link>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="trust-indicators">
-              <div className="indicator">
-                <LuUsers className="indicator-icon" />
-                <span className="indicator-text">10,000+ Students</span>
+            {/* Trust and Social Proof */}
+            <div className="social-proof-container">
+              <div className="proof-indicator">
+                <LuUsers className="proof-icon" />
+                <span className="proof-text">10,000+ Students</span>
               </div>
-              <div className="indicator">
-                <LuAward className="indicator-icon" />
-                <span className="indicator-text">Industry Certified</span>
+              <div className="proof-indicator">
+                <LuAward className="proof-icon" />
+                <span className="proof-text">Industry Certified</span>
               </div>
-              <div className="indicator">
-                <div className="rating-stars">★★★★★</div>
-                <span className="indicator-text">4.9/5 Rating</span>
+              <div className="proof-indicator">
+                <div className="rating-display">
+                  <LuStar className="star-icon filled" />
+                  <LuStar className="star-icon filled" />
+                  <LuStar className="star-icon filled" />
+                  <LuStar className="star-icon filled" />
+                  <LuStar className="star-icon filled" />
+                </div>
+                <span className="proof-text">4.9/5 Rating</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Visual Elements */}
-        <div className="cta-visual">
-          <div className="cards-container">
-            <div className="visual-card card-1">
-              <div className="card-icon">
+        {/* Visual Elements Section */}
+        <div className="cta-visual-area">
+          <div className="feature-cards-grid">
+            <div className="feature-showcase-card card-primary">
+              <div className="showcase-card-icon">
                 <LuBookOpen />
               </div>
-              <div className="card-content">
-                <h4>200+ Courses</h4>
-                <p>Expert-led programs</p>
+              <div className="showcase-card-details">
+                <h4 className="card-title">200+ Courses</h4>
+                <p className="card-subtitle">Expert-led programs</p>
               </div>
             </div>
 
-            <div className="visual-card card-2">
-              <div className="card-icon">
+            <div className="feature-showcase-card card-secondary">
+              <div className="showcase-card-icon">
                 <LuUsers />
               </div>
-              <div className="card-content">
-                <h4>Live Sessions</h4>
-                <p>Interactive learning</p>
+              <div className="showcase-card-details">
+                <h4 className="card-title">Live Sessions</h4>
+                <p className="card-subtitle">Interactive learning</p>
               </div>
             </div>
 
-            <div className="visual-card card-3">
-              <div className="card-icon">
+            <div className="feature-showcase-card card-tertiary">
+              <div className="showcase-card-icon">
                 <LuAward />
               </div>
-              <div className="card-content">
-                <h4>Certificates</h4>
-                <p>Industry recognized</p>
+              <div className="showcase-card-details">
+                <h4 className="card-title">Certificates</h4>
+                <p className="card-subtitle">Industry recognized</p>
               </div>
             </div>
           </div>
 
-          {/* Decorative Elements */}
-          <div className="floating-element element-1"></div>
-          <div className="floating-element element-2"></div>
-          <div className="floating-element element-3"></div>
+          {/* Decorative Animation Elements */}
+          <div className="animated-decoration decoration-circle-1"></div>
+          <div className="animated-decoration decoration-circle-2"></div>
+          <div className="animated-decoration decoration-circle-3"></div>
         </div>
       </div>
 
-      {/* Background Pattern */}
-      <div className="background-pattern">
-        <div className="pattern-grid"></div>
-        <div className="gradient-overlay"></div>
+      {/* Background Design Elements */}
+      <div className="section-background-design">
+        <div className="geometric-pattern-grid"></div>
+        <div className="gradient-background-overlay"></div>
       </div>
     </section>
   )

@@ -72,7 +72,7 @@ export default function Header() {
             {/* Logo */}
             <div className="logo-section">
               <Link href="/" className="logo-link">
-                <Image src="/images/logopv.png" alt="PVclasses Logo" width={87} height={50} priority />
+                <Image src="/images/logopv.png" alt="PVclasses Logo" width={100} height={100} priority />
               </Link>
             </div>
 
@@ -154,7 +154,7 @@ export default function Header() {
           <div className="mobile-menu">
             <div className="mobile-header">
               <Link href="/" className="mobile-logo">
-                <Image src="/images/logopv.png" alt="PVclasses Logo" width={100} height={40} />
+                <Image src="/images/logopv.png" alt="PVclasses Logo" width={100} height={80} />
               </Link>
               <button className="mobile-close" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
                 <FiX />

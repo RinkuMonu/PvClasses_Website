@@ -650,7 +650,8 @@
   .main-cta-btn:focus,
   .secondary-cta-btn:focus,
   .tag-item:focus {
-    outline: 2px solid var(--cyan-blue);
-    outline-offset: 2px;
+    outline: none;
+    outline-offset: 0px;
+    box-shadow: none;
   }
   

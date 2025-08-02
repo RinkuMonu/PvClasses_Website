@@ -18,11 +18,11 @@ export default function HeroSection() {
   }
 
   const handleGetStarted = () => {
-    router.push("/course")
+    router.push("/contact")
   }
 
   const handleWatchDemo = () => {
-    console.log("Watch demo clicked")
+    router.push("/course")
   }
 
   return (
