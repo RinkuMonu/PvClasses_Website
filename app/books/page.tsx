@@ -47,7 +47,6 @@ const relatedBooks = [
   "Undercover UX Design",
   "Interaction Design"
 ];
-
 interface BookBlockProps {
   title: string;
   imageSize?: string;
