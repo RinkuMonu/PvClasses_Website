@@ -6,7 +6,7 @@ import { BsInstagram } from "react-icons/bs";
 import { FaPinterest } from "react-icons/fa";
 import { FaFacebook, FaXTwitter } from "react-icons/fa6";
 import { Parallax } from "react-scroll-parallax";
-
+import "@/app/styles/main.css"
 export default function Footer() {
   return (
     <footer className="main-footer position-relative overflow-hidden py-5">
