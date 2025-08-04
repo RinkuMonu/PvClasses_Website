@@ -9,7 +9,6 @@ import {
   LuArrowRight,
   LuBookOpen,
   LuTrendingUp,
-  LuGraduationCap,
   LuChevronRight,
   LuFilter,
 } from "react-icons/lu"

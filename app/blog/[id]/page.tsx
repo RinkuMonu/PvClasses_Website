@@ -3,22 +3,16 @@ import { useState } from "react"
 import type React from "react"
 
 import Link from "next/link"
-import { useParams } from "next/navigation"
 import {
     LuCalendar,
     LuClock,
     LuTag,
     LuArrowLeft,
-    LuShare2,
     LuBookmark,
     LuHeart,
     LuMessageCircle,
     LuUser,
     LuChevronRight,
-    LuFacebook,
-    LuTwitter,
-    LuLinkedin,
-    LuLink,
     LuEye,
     LuThumbsUp,
 } from "react-icons/lu"
@@ -159,34 +153,13 @@ const comments = [
 ]
 
 export default function BlogDetailsPage() {
-    const params = useParams()
+    
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [isLiked, setIsLiked] = useState(false)
-    const [showShareMenu, setShowShareMenu] = useState(false)
+    
     const [newComment, setNewComment] = useState("")
     const [showCommentForm, setShowCommentForm] = useState(false)
 
-    const handleShare = (platform: string) => {
-        const url = window.location.href
-        const title = blogPost.title
-
-        switch (platform) {
-            case "facebook":
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank")
-                break
-            case "twitter":
-                window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, "_blank")
-                break
-            case "linkedin":
-                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, "_blank")
-                break
-            case "copy":
-                navigator.clipboard.writeText(url)
-                // You could show a toast notification here
-                break
-        }
-        setShowShareMenu(false)
-    }
 
     const handleCommentSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -341,28 +314,6 @@ export default function BlogDetailsPage() {
 
                     {/* Sidebar */}
                     <aside className="article-sidebar">
-                        {/* Table of Contents */}
-                        {/* <div className="sidebar-widget">
-                            <h3 className="widget-title">Table of Contents</h3>
-                            <nav className="table-of-contents">
-                                <a href="#personalized-learning" className="toc-link">
-                                    The Rise of Personalized Learning
-                                </a>
-                                <a href="#immersive-technologies" className="toc-link">
-                                    Immersive Technologies in Education
-                                </a>
-                                <a href="#microlearning" className="toc-link">
-                                    Microlearning and Bite-Sized Content
-                                </a>
-                                <a href="#social-learning" className="toc-link">
-                                    The Social Learning Revolution
-                                </a>
-                                <a href="#looking-ahead" className="toc-link">
-                                    Looking Ahead
-                                </a>
-                            </nav>
-                        </div> */}
-
                         {/* Related Articles */}
                         <div className="sidebar-widget">
                             <h3 className="widget-title">Related Articles</h3>
